@@ -118,6 +118,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="ko">
+      <head>
+        <meta name="naver-site-verification" content="c3c33666e6bd71a25a863f9a974bbea64792fc98" />
+      </head>
       <body
         className={`${nanumGothic.variable} ${notoSans.variable} bg-slate-50 text-slate-900 antialiased`}
       >
