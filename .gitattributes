@@ -1,0 +1,20 @@
+# .gitattributes
+# 줄바꿈 문자 자동 처리 설정
+
+# 모든 텍스트 파일은 저장소에 LF로 저장하고, 체크아웃 시 자동 변환
+* text=auto eol=lf
+
+# Windows 배치 파일은 CRLF 유지
+*.{cmd,[cC][mM][dD]} text eol=crlf
+*.{bat,[bB][aA][tT]} text eol=crlf
+
+# 바이너리 파일은 줄바꿈 변환 제외
+*.{png,jpg,jpeg,gif,ico,svg,woff,woff2,ttf,eot} binary
+*.{pdf,zip,tar,gz} binary
+
+# 소스 코드 파일들 (LF 유지)
+*.{js,jsx,ts,tsx,json,css,scss,html,md,yml,yaml} text eol=lf
+
+# 설정 파일들
+*.{gitignore,gitattributes,editorconfig} text eol=lf
+

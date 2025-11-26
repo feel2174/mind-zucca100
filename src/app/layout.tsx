@@ -18,9 +18,9 @@ const notoSans = Noto_Sans_KR({
 });
 
 const siteName = "마음콕 심리테스트";
-const title = "마음콕 심리테스트 - 나에게 맞는 공무원 직렬 찾기";
+const title = "마음콕 심리테스트 - 클릭 한 번으로 즐기는 맞춤 심리·진로 테스트";
 const description =
-  "다양한 심리테스트와 진로 테스트를 한 곳에서 만나보세요. 공무원 직렬 추천 테스트로 나에게 맞는 직렬을 3분 안에 확인해보세요.";
+  "공무원 직렬 추천, 돈관리 성향, 직무 유형, 직장인 캐릭터까지. 다양한 심리·진로 테스트를 한 곳에서 만나보세요. 3분 만에 나에게 맞는 결과를 확인해보세요.";
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://mind.zucca100.com"),
