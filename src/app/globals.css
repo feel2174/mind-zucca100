@@ -1,0 +1,51 @@
+@import "tailwindcss";
+
+:root {
+  color-scheme: light;
+}
+
+body {
+  min-height: 100vh;
+  background: radial-gradient(circle at 10% 20%, #eef2ff 0%, #f8fafc 45%, #f1f5f9 100%);
+  color: #0f172a;
+  font-family: var(--font-nanum-gothic), var(--font-noto-sans), "Malgun Gothic",
+    system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  word-break: keep-all;
+  overflow-wrap: break-word;
+}
+
+.glass-panel {
+  backdrop-filter: blur(14px);
+  background: rgba(255, 255, 255, 0.85);
+  box-shadow: 0 25px 60px rgba(79, 70, 229, 0.1);
+}
+
+::selection {
+  background: #c7d2fe;
+  color: #1e1b4b;
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, #818cf8, #a855f7);
+  border-radius: 999px;
+}
+
+@keyframes slide-up {
+  from {
+    transform: translateY(100%);
+    opacity: 0;
+  }
+
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.animate-slide-up {
+  animation: slide-up 0.3s ease-out;
+}
