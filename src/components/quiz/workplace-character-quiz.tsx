@@ -386,7 +386,7 @@ export function WorkplaceCharacterQuiz() {
                 </ul>
               </div>
               <Button asChild className="mt-8 w-full text-lg">
-                <Link href={infoLink} target="_blank" rel="noreferrer">
+                <Link href={infoLink} rel="noreferrer">
                   💼 채용 정보 더 보기
                 </Link>
               </Button>
@@ -426,6 +426,8 @@ function ResultList({ title, items }: { title: string; items: string[] }) {
     </div>
   );
 }
+
+
 
 
 

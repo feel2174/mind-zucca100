@@ -25,7 +25,7 @@ interface ResultDetail {
   action: string[];
 }
 
-const infoLink = "https://www.fss.or.kr/fss/lay1/program/S1T140C1458/moneyEdu/view.do";
+const infoLink = "https://www.banksalad.com/articles/categories/%EC%98%88%EC%A0%81%EA%B8%88";
 
 const questions: Question[] = [
   {
@@ -315,7 +315,7 @@ export function MoneyHabitQuiz() {
                 </ul>
               </div>
               <Button asChild className="mt-8 w-full text-lg">
-                <Link href={infoLink} target="_blank" rel="noreferrer">
+                <Link href={infoLink}  rel="noreferrer">
                   📚 금융 교육 자료 더 보기
                 </Link>
               </Button>
