@@ -1,24 +1,48 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { Suspense } from "react";
 import { CivilServiceQuiz } from "@/components/quiz/civil-service-quiz";
 
 const pageTitle = "공무원 직렬 추천 테스트";
 const pageDescription =
   "10개의 질문으로 나에게 가장 잘 맞는 공무원 직렬(행정·기술·세무·보안·교육)을 추천해 드립니다. 모바일에서도 3분만에 완료하세요.";
 
-export const metadata: Metadata = {
-  title: pageTitle,
-  description: pageDescription,
-  alternates: {
-    canonical: "/gongmuwon",
-  },
-  openGraph: {
-    title: pageTitle,
-    description: pageDescription,
-    type: "article",
-    url: "https://mind.zucca100.com/gongmuwon",
-  },
-};
+export async function generateMetadata({ searchParams }: { searchParams: Promise<{ [key: string]: string | string[] | undefined }> }): Promise<Metadata> {
+  const params = await searchParams;
+  const res = params.res as string | undefined;
+
+  let title = pageTitle;
+  let description = pageDescription;
+
+  if (res) {
+    const titles: Record<string, string> = {
+      admin: "행정직",
+      tech: "기술직 (전산직)",
+      education: "교육직",
+      security: "보안직 (경찰/소방)",
+      tax: "세무직",
+    };
+    const key = res.toLowerCase();
+    if (titles[key]) {
+      title = `추천 직렬: ${titles[key]} | 마음콕 공무원 테스트`;
+      description = `당신에게 추천하는 공무원 직렬은 '${titles[key]}'입니다. 핵심 역량과 주요 근무지 정보를 확인해보세요.`;
+    }
+  }
+
+  return {
+    title,
+    description,
+    alternates: {
+      canonical: "/gongmuwon",
+    },
+    openGraph: {
+      title,
+      description,
+      type: "article",
+      url: `https://mind.zucca100.com/gongmuwon${res ? `?res=${res}` : ""}`,
+    },
+  };
+}
 
 const jsonLd = {
   "@context": "https://schema.org",
@@ -71,7 +95,9 @@ export default function GongmuwonTestPage() {
           </div>
         </header>
 
-        <CivilServiceQuiz />
+        <Suspense fallback={<div className="flex h-64 items-center justify-center font-bold text-indigo-400">분석 중...</div>}>
+          <CivilServiceQuiz />
+        </Suspense>
       </article>
 
       <script

@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Script from "next/script";
 import { Nanum_Gothic, Noto_Sans_KR } from "next/font/google";
+import { Analytics } from "@vercel/analytics/next";
 import "./globals.css";
 
 const nanumGothic = Nanum_Gothic({
@@ -20,7 +21,7 @@ const notoSans = Noto_Sans_KR({
 const siteName = "마음콕 심리테스트";
 const title = "마음콕 심리테스트 - 클릭 한 번으로 즐기는 맞춤 심리·진로 테스트";
 const description =
-  "공무원 직렬 추천, 돈관리 성향, 직무 유형, 직장인 캐릭터까지. 다양한 심리·진로 테스트를 한 곳에서 만나보세요. 3분 만에 나에게 맞는 결과를 확인해보세요.";
+  "MBTI 연애 성향, 번아웃 자가진단, 공무원 직렬 추천, 돈관리 성향까지. 다양한 심리·진로 테스트를 한 곳에서 만나보세요. 3분 만에 나에게 맞는 결과를 확인해보세요.";
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://mind.zucca100.com"),
@@ -31,6 +32,8 @@ export const metadata: Metadata = {
   description,
   keywords: [
     "심리테스트",
+    "MBTI 연애 테스트",
+    "번아웃 자가진단",
     "공무원 직렬 테스트",
     "직업 적성 테스트",
     "심리 검사",
@@ -131,6 +134,7 @@ export default function RootLayout({
           strategy="afterInteractive"
         />
         {children}
+        <Analytics />
       </body>
     </html>
   );

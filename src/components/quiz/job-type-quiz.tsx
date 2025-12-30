@@ -2,7 +2,10 @@
 
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
+import { useSearchParams, useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
+import { motion, AnimatePresence } from "framer-motion";
+import { AdSenseSlot } from "@/components/ui/adsense-slot";
 
 type JobType = "office" | "sales" | "tech" | "content";
 
@@ -73,51 +76,6 @@ const questions: Question[] = [
       { text: "자유롭고 유연한 환경", scores: { office: 1, sales: 1, tech: 1, content: 3 } },
     ],
   },
-  {
-    question: "가장 자신 있는 능력은?",
-    answers: [
-      { text: "📊 데이터 정리와 분석", scores: { office: 3, sales: 1, tech: 2, content: 1 } },
-      { text: "💼 설득과 협상", scores: { office: 1, sales: 3, tech: 1, content: 1 } },
-      { text: "💻 코딩과 기술 구현", scores: { office: 1, sales: 1, tech: 3, content: 1 } },
-      { text: "✍️ 글쓰기와 스토리텔링", scores: { office: 1, sales: 1, tech: 1, content: 3 } },
-    ],
-  },
-  {
-    question: "회의에서 주로 하는 행동은?",
-    answers: [
-      { text: "회의록 작성과 액션 아이템 정리", scores: { office: 3, sales: 1, tech: 1, content: 1 } },
-      { text: "발표와 프레젠테이션", scores: { office: 1, sales: 3, tech: 1, content: 2 } },
-      { text: "기술적 의견 제시와 솔루션 제안", scores: { office: 1, sales: 1, tech: 3, content: 1 } },
-      { text: "아이디어 브레인스토밍", scores: { office: 1, sales: 1, tech: 1, content: 3 } },
-    ],
-  },
-  {
-    question: "업무 외 시간에 관심 있는 것은?",
-    answers: [
-      { text: "자격증 공부나 자기계발", scores: { office: 2, sales: 1, tech: 2, content: 1 } },
-      { text: "네트워킹과 인맥 쌓기", scores: { office: 1, sales: 3, tech: 1, content: 1 } },
-      { text: "새로운 기술 학습", scores: { office: 1, sales: 1, tech: 3, content: 1 } },
-      { text: "문화생활과 트렌드 파악", scores: { office: 1, sales: 1, tech: 1, content: 3 } },
-    ],
-  },
-  {
-    question: "성장하는 방법은?",
-    answers: [
-      { text: "체계적인 학습과 자격증 취득", scores: { office: 3, sales: 1, tech: 2, content: 1 } },
-      { text: "실전 경험과 고객 만족도 향상", scores: { office: 1, sales: 3, tech: 1, content: 1 } },
-      { text: "프로젝트 경험과 기술 스택 확장", scores: { office: 1, sales: 1, tech: 3, content: 1 } },
-      { text: "포트폴리오 구축과 크리에이티브 향상", scores: { office: 1, sales: 1, tech: 1, content: 3 } },
-    ],
-  },
-  {
-    question: "이직을 고려할 때 가장 중요한 것은?",
-    answers: [
-      { text: "안정성과 복지", scores: { office: 3, sales: 1, tech: 1, content: 1 } },
-      { text: "성과 보상과 커미션", scores: { office: 1, sales: 3, tech: 1, content: 1 } },
-      { text: "기술 스택과 성장 가능성", scores: { office: 1, sales: 1, tech: 3, content: 1 } },
-      { text: "창의적 자유도와 문화", scores: { office: 1, sales: 1, tech: 1, content: 3 } },
-    ],
-  },
 ];
 
 const results: Record<JobType, ResultDetail> = {
@@ -125,89 +83,33 @@ const results: Record<JobType, ResultDetail> = {
     title: "사무/기획형",
     subtitle: "체계적이고 안정적인 업무를 선호하는 당신!",
     icon: "📋",
-    characteristics: [
-      "체계적인 문서 관리와 일정 조율에 능함",
-      "정확성과 완성도를 중시하는 업무 스타일",
-      "규칙적이고 예측 가능한 환경 선호",
-      "데이터 정리와 분석에 강점",
-    ],
-    suitableFor: [
-      "계획적이고 꼼꼼한 성격",
-      "안정적인 업무 환경을 원하는 사람",
-      "문서 작성과 정리에 자신 있는 사람",
-      "규칙과 프로세스를 잘 따르는 사람",
-    ],
-    tips: [
-      "사무 자동화 도구 활용으로 효율성 높이기",
-      "프로젝트 관리 자격증 취득 고려",
-      "데이터 분석 스킬 보완으로 경쟁력 강화",
-    ],
+    characteristics: ["체계적인 문서 관리와 일정 조율", "정확성과 완성도를 중시", "데이터 정리와 분석 장점"],
+    suitableFor: ["계획적이고 꼼꼼한 성격", "안정적인 환경 선호"],
+    tips: ["사무 자동화 도구 활용", "데이터 분석 스킬 강화"],
   },
   sales: {
     title: "영업/세일즈형",
-    subtitle: "사람들과의 소통을 즐기고 목표 달성을 추구하는 당신!",
+    subtitle: "소통을 즐기고 목표를 향해 달리는 당신!",
     icon: "💼",
-    characteristics: [
-      "고객과의 관계 형성에 능함",
-      "설득력과 협상력이 뛰어남",
-      "목표 지향적이고 성과 중심",
-      "다양한 사람들과의 네트워킹 선호",
-    ],
-    suitableFor: [
-      "외향적이고 적극적인 성격",
-      "성과 보상에 동기부여되는 사람",
-      "대인관계에 자신 있는 사람",
-      "변화와 도전을 즐기는 사람",
-    ],
-    tips: [
-      "CRM 도구 활용으로 고객 관리 체계화",
-      "영업 심리학과 커뮤니케이션 스킬 학습",
-      "네트워킹 이벤트 적극 참여",
-    ],
+    characteristics: ["고객 관계 형성에 능함", "설득력과 협상력 보유", "목표 지향적 성향"],
+    suitableFor: ["외향적이고 적극적인 성격", "도전을 즐기는 사람"],
+    tips: ["CRM 도구 활용", "커뮤니케이션 스킬 학습"],
   },
   tech: {
     title: "개발/기술형",
-    subtitle: "문제 해결과 기술 구현에 열정을 가진 당신!",
+    subtitle: "문제 해결과 기술적 도전에 열광하는 당신!",
     icon: "💻",
-    characteristics: [
-      "논리적 사고와 문제 해결 능력이 뛰어남",
-      "깊이 있는 집중과 몰입을 즐김",
-      "새로운 기술 학습에 적극적",
-      "시스템과 구조를 이해하는 데 강점",
-    ],
-    suitableFor: [
-      "논리적이고 분석적인 사고를 가진 사람",
-      "혼자 집중해서 일하는 것을 선호하는 사람",
-      "지속적인 학습을 즐기는 사람",
-      "기술적 도전을 좋아하는 사람",
-    ],
-    tips: [
-      "프로젝트 포트폴리오 지속적으로 업데이트",
-      "오픈소스 기여로 실력과 네트워크 확장",
-      "기술 블로그 운영으로 전문성 어필",
-    ],
+    characteristics: ["논리적 사고와 집중력", "새로운 기술 학습 열정", "시스템 구조 이해 능력"],
+    suitableFor: ["분석적인 사고를 가진 사람", "몰입을 즐기는 사람"],
+    tips: ["포트폴리오 업데이트", "기술 블로그 운영"],
   },
   content: {
     title: "콘텐츠/마케팅형",
-    subtitle: "창의적 아이디어와 스토리텔링에 재능이 있는 당신!",
+    subtitle: "창의적인 아이디어와 스토리의 귀재!",
     icon: "🎨",
-    characteristics: [
-      "창의적 아이디어 발상에 능함",
-      "트렌드 파악과 콘텐츠 기획에 강점",
-      "다양한 매체와 플랫폼 활용",
-      "자유롭고 유연한 업무 환경 선호",
-    ],
-    suitableFor: [
-      "창의적이고 상상력이 풍부한 사람",
-      "트렌드에 민감하고 문화에 관심 많은 사람",
-      "다양한 경험을 즐기는 사람",
-      "표현력과 소통 능력이 뛰어난 사람",
-    ],
-    tips: [
-      "다양한 콘텐츠 포트폴리오 구축",
-      "SNS와 플랫폼 트렌드 지속적으로 파악",
-      "크리에이티브 툴 활용 능력 향상",
-    ],
+    characteristics: ["아이디어 발상 능력", "트렌드 민감도", "다양한 매체 활용도"],
+    suitableFor: ["상상력이 풍부한 사람", "문화에 관심 많은 사람"],
+    tips: ["콘텐츠 포트폴리오 구축", "플랫폼 트렌드 파악"],
   },
 };
 
@@ -218,30 +120,28 @@ const initialScores: Record<JobType, number> = {
   content: 0,
 };
 
-const totalQuestions = questions.length;
-
 export function JobTypeQuiz() {
+  const router = useRouter();
+  const searchParams = useSearchParams();
   const [step, setStep] = useState<"intro" | "quiz" | "ad" | "result">("intro");
-  const [currentQuestion, setCurrentQuestion] = useState(0);
+  const [currentIdx, setCurrentIdx] = useState(0);
   const [scores, setScores] = useState(initialScores);
   const [isResultButtonEnabled, setIsResultButtonEnabled] = useState(false);
 
+  // URL에서 결과값이 있는지 확인
+  useEffect(() => {
+    const res = searchParams.get("res");
+    if (res && results[res.toLowerCase() as JobType]) {
+      setStep("result");
+    }
+  }, [searchParams]);
+
   const bestType = useMemo(() => {
-    return Object.entries(scores).sort(([, a], [, b]) => b - a)[0]?.[0] as
-      | JobType
-      | undefined;
+    return Object.entries(scores).sort(([, a], [, b]) => b - a)[0]?.[0] as JobType | undefined;
   }, [scores]);
 
   const progress =
-    step === "quiz"
-      ? Math.round(((currentQuestion + 1) / totalQuestions) * 100)
-      : 0;
-
-  const handleStart = () => {
-    setStep("quiz");
-    setCurrentQuestion(0);
-    setScores(initialScores);
-  };
+    step === "quiz" ? Math.round(((currentIdx + 1) / questions.length) * 100) : 0;
 
   const handleAnswer = (answer: Answer) => {
     setScores((prev) => {
@@ -252,181 +152,224 @@ export function JobTypeQuiz() {
       return next;
     });
 
-    if (currentQuestion + 1 < totalQuestions) {
-      setCurrentQuestion((prev) => prev + 1);
+    if (currentIdx + 1 < questions.length) {
+      setCurrentIdx((prev) => prev + 1);
     } else {
-      setIsResultButtonEnabled(false);
       setStep("ad");
     }
   };
 
+  const effectiveBest = useMemo(() => {
+    const res = searchParams.get("res");
+    if (res && results[res.toLowerCase() as JobType]) return res.toLowerCase() as JobType;
+    return Object.entries(scores).sort(([, a], [, b]) => b - a)[0]?.[0] as JobType | undefined;
+  }, [scores, searchParams]);
+
   const handleRestart = () => {
+    router.replace("/job", { scroll: false });
     setStep("intro");
-    setCurrentQuestion(0);
+    setCurrentIdx(0);
     setScores(initialScores);
     setIsResultButtonEnabled(false);
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
+  const handleShare = async () => {
+    const url = window.location.href;
+    if (navigator.share) {
+      try {
+        await navigator.share({
+          title: `나의 직무 적성: ${resultData.title}`,
+          text: `나에게 딱 맞는 직무를 확인해보세요! #마음콕 #직무테스트`,
+          url: url,
+        });
+      } catch (err) {
+        console.error("Error sharing:", err);
+      }
+    } else {
+      try {
+        await navigator.clipboard.writeText(url);
+        alert("결과 주소가 복사되었습니다!");
+      } catch (err) {
+        console.error("Clipboard error:", err);
+      }
+    }
+  };
+
   useEffect(() => {
     if (step === "ad") {
       const timer = setTimeout(() => {
+        const finalBest = Object.entries(scores).sort(([, a], [, b]) => b - a)[0]?.[0] as JobType;
+        router.push(`?res=${finalBest}`, { scroll: false });
         setIsResultButtonEnabled(true);
-      }, 5000);
-
+      }, 4000);
       return () => clearTimeout(timer);
     }
-  }, [step]);
+  }, [step, scores, router]);
 
-  const current = questions[currentQuestion];
-  const result = bestType ? results[bestType] : results.office;
+  const current = questions[currentIdx];
+  const resultData = effectiveBest ? results[effectiveBest] : results.office;
 
   return (
     <div className="flex flex-col gap-8">
-      {step === "intro" && (
-        <section className="rounded-3xl bg-white p-8 shadow-xl shadow-indigo-50">
-          <div className="space-y-4 text-center">
-            <p className="inline-flex items-center rounded-full bg-indigo-50 px-4 py-1 text-sm font-semibold text-indigo-600">
-              🎯 직무 적성 테스트
+      <AnimatePresence mode="wait">
+        {step === "intro" && (
+          <motion.section
+            key="intro"
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.9 }}
+            className="rounded-[2.5rem] bg-white p-8 md:p-12 text-center shadow-2xl border border-indigo-50"
+          >
+            <div className="mb-8 mx-auto h-20 w-20 flex items-center justify-center rounded-3xl bg-indigo-50 text-4xl shadow-inner shadow-indigo-100">
+              🎯
+            </div>
+            <h2 className="text-3xl font-black text-slate-900 leading-tight">내게 맞는<br />직무 유형 찾기</h2>
+            <p className="mt-4 text-slate-500 font-bold leading-relaxed">
+              성향과 에너지, 소통 방식을 분석하여<br />
+              가장 빛날 수 있는 직무를 찾아드립니다.
             </p>
-            <h2 className="text-3xl font-bold text-slate-900">
-              10개의 질문으로 나에게 맞는 직무를 찾아보세요
-            </h2>
-            <p className="text-slate-500">
-              성향·에너지·대인관계 선호도를 통해 사무/기획·영업·개발·콘텐츠 중
-              가장 적합한 직무를 추천해 드려요. 소요 시간은 약 3분입니다.
-            </p>
-            <Button className="w-full justify-center text-lg" onClick={handleStart}>
-              🚀 테스트 시작하기
-            </Button>
-            <p className="text-xs text-slate-400">
-              * 현재 베타 버전으로, 결과는 참고용입니다.
-            </p>
-          </div>
-        </section>
-      )}
+            <div className="space-y-6">
+              <Button size="xl" className="w-full font-black bg-indigo-600" onClick={() => setStep("quiz")}>
+                🚀 나에게 맞는 직무 찾기
+              </Button>
+              <AdSenseSlot slot="8424458319" className="min-h-[100px]" />
+            </div>
+          </motion.section>
+        )}
 
-      {step === "quiz" && current && (
-        <section className="rounded-3xl bg-white p-6 shadow-lg shadow-indigo-50">
-          <div className="mb-6 h-3 w-full rounded-full bg-slate-100">
-            <div
-              className="h-3 rounded-full bg-gradient-to-r from-indigo-500 to-purple-500 transition-all"
-              style={{ width: `${progress}%` }}
-            />
-          </div>
-          <p className="text-sm font-semibold text-indigo-500">
-            질문 {currentQuestion + 1} / {totalQuestions}
-          </p>
-          <h3 className="mt-3 text-2xl font-bold text-slate-900">
-            {current.question}
-          </h3>
-          <div className="mt-6 grid gap-3">
-            {current.answers.map((answer) => (
-              <button
-                key={answer.text}
-                onClick={() => handleAnswer(answer)}
-                className="rounded-2xl border border-slate-100 bg-slate-50 px-5 py-4 text-left text-base font-semibold text-slate-700 transition hover:-translate-y-1 hover:border-indigo-200 hover:bg-white hover:text-indigo-600"
+        {step === "quiz" && current && (
+          <motion.section
+            key="quiz"
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: -20 }}
+            className="rounded-3xl bg-white p-6 md:p-10 shadow-xl border border-slate-100"
+          >
+            <div className="mb-8 h-3 w-full overflow-hidden rounded-full bg-slate-50">
+              <motion.div
+                initial={{ width: 0 }}
+                animate={{ width: `${progress}%` }}
+                className="h-full bg-gradient-to-r from-indigo-400 to-purple-600"
+              />
+            </div>
+            <div>
+              <span className="text-xs font-black text-indigo-500 uppercase tracking-widest">Step {currentIdx + 1} / {questions.length}</span>
+              <h3 className="mt-3 text-2xl md:text-3xl font-bold text-slate-900 leading-tight">
+                {current.question}
+              </h3>
+            </div>
+            <div className="mt-8 grid gap-3">
+              {current.answers.map((answer) => (
+                <motion.button
+                  key={answer.text}
+                  whileHover={{ scale: 1.01 }}
+                  whileTap={{ scale: 0.99 }}
+                  onClick={() => handleAnswer(answer)}
+                  className="rounded-2xl border-2 border-slate-50 bg-slate-50/50 px-6 py-5 text-left text-lg font-bold text-slate-700 hover:border-indigo-200 hover:bg-white hover:text-indigo-600 transition-all shadow-sm"
+                >
+                  {answer.text}
+                </motion.button>
+              ))}
+            </div>
+          </motion.section>
+        )}
+
+        {step === "ad" && (
+          <motion.section
+            key="ad"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            className="rounded-[2.5rem] bg-white p-10 md:p-16 text-center shadow-2xl border border-slate-100"
+          >
+            <div className="space-y-8">
+              <div className="flex flex-col items-center">
+                <div className="h-20 w-20 animate-spin rounded-full border-4 border-indigo-100 border-t-indigo-600 mb-6" />
+                <h3 className="text-3xl font-black text-slate-900 tracking-tight leading-tight">커리어 전문가 AI가<br />답변을 정밀 분석 중입니다</h3>
+              </div>
+
+              <div className="w-full max-w-md mx-auto bg-slate-50 rounded-[2rem] p-6 border border-slate-100 min-h-[300px] flex flex-col items-center justify-center">
+                <p className="text-xs font-black text-slate-400 tracking-widest uppercase mb-4">Market Trend Analysis</p>
+                <AdSenseSlot slot="8424458319" className="w-full h-full" />
+              </div>
+
+              <Button
+                size="xl"
+                onClick={() => setStep("result")}
+                className="w-full font-black bg-indigo-600"
+                disabled={!isResultButtonEnabled}
               >
-                {answer.text}
-              </button>
-            ))}
-          </div>
-        </section>
-      )}
-
-      {step === "ad" && (
-        <section className="rounded-3xl bg-white p-8 shadow-xl shadow-indigo-50">
-          <div className="space-y-6 text-center">
-            <div className="text-4xl">⏳</div>
-            <h3 className="text-2xl font-bold text-slate-900">
-              결과를 계산하고 있어요!
-            </h3>
-            <p className="text-slate-500">
-              잠시만 기다려주시면 당신에게 맞는 직무를 추천해드릴게요.
-            </p>
-            <div className="min-h-[250px] w-full" id="ad-before-result" />
-            <Button
-              onClick={() => setStep("result")}
-              className="w-full text-lg"
-              disabled={!isResultButtonEnabled}
-            >
-              {isResultButtonEnabled ? "✨ 결과 보기" : "⏳ 계산 중... (5초)"}
-            </Button>
-          </div>
-        </section>
-      )}
-
-      {step === "result" && (
-        <section className="space-y-6">
-          <div className="rounded-3xl bg-gradient-to-br from-indigo-500 via-purple-500 to-sky-500 p-1 shadow-2xl">
-            <div className="h-full rounded-[22px] bg-white/95 p-8">
-              <div className="text-center">
-                <div className="text-5xl">{result.icon}</div>
-                <h3 className="mt-4 text-3xl font-bold text-slate-900">
-                  {result.title}
-                </h3>
-                <p className="text-lg text-slate-500">{result.subtitle}</p>
-              </div>
-              <div className="mt-8 grid gap-6 md:grid-cols-2">
-                <ResultList title="이 직무의 특징" items={result.characteristics} />
-                <ResultList title="잘 맞는 사람 성향" items={result.suitableFor} />
-              </div>
-              <div className="mt-6 rounded-2xl bg-slate-50 p-6">
-                <h4 className="text-sm font-semibold uppercase tracking-wide text-slate-500">
-                  커리어 팁
-                </h4>
-                <ul className="mt-3 space-y-2 text-base text-slate-700">
-                  {result.tips.map((tip) => (
-                    <li key={tip} className="flex items-start gap-2">
-                      <span className="mt-1 text-indigo-500">•</span>
-                      <span>{tip}</span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-              <Button asChild className="mt-8 w-full text-lg">
-                <Link href={infoLink} rel="noreferrer">
-                  💼 채용 정보 더 보기
-                </Link>
+                {isResultButtonEnabled ? "✨ 결과 레포트 확인하기" : "⏳ 분석 중... (4초)"}
               </Button>
             </div>
-          </div>
+          </motion.section>
+        )}
 
-          <div className="grid gap-4">
-            <div className="min-h-[200px] w-full" id="ad-after-result-top" />
-            <Button
-              onClick={handleRestart}
-              className="w-full bg-gradient-to-r from-pink-500 to-orange-400"
-            >
-              🔄 다시 테스트하기
-            </Button>
-            <div className="min-h-[200px] w-full" id="ad-after-result-bottom" />
-          </div>
-        </section>
-      )}
+        {step === "result" && (
+          <motion.section
+            key="result"
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="space-y-6"
+          >
+            <div className="overflow-hidden rounded-[3rem] bg-white shadow-2xl border-8 border-white">
+              <div className="bg-gradient-to-br from-indigo-600 via-indigo-700 to-purple-700 p-12 text-center text-white relative">
+                <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -mr-16 -mt-16 blur-3xl" />
+                <div className="mb-6 text-8xl drop-shadow-2xl">{resultData.icon}</div>
+                <h3 className="text-4xl font-black leading-tight tracking-tight">{resultData.title}</h3>
+                <p className="mt-2 text-indigo-100 font-bold text-xl">{resultData.subtitle}</p>
+              </div>
+              <div className="p-8 md:p-12">
+                <div className="grid gap-8 md:grid-cols-2">
+                  <div className="rounded-[2rem] bg-indigo-50/50 p-8 border border-indigo-100">
+                    <h4 className="text-xs font-black text-indigo-400 uppercase tracking-widest mb-6">핵심 성과 역량</h4>
+                    <ul className="space-y-4">
+                      {resultData.characteristics.map((item) => (
+                        <li key={item} className="flex items-center gap-4 font-bold text-slate-700 text-lg">
+                          <span className="h-2.5 w-2.5 rounded-full bg-indigo-400 shadow-sm" />
+                          {item}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                  <div className="rounded-[2rem] bg-purple-50/50 p-8 border border-purple-100">
+                    <h4 className="text-xs font-black text-purple-400 uppercase tracking-widest mb-6">Career Tips</h4>
+                    <ul className="space-y-4">
+                      {resultData.tips.map((tip) => (
+                        <li key={tip} className="flex items-center gap-4 font-bold text-slate-700 text-lg">
+                          <span className="h-2.5 w-2.5 rounded-full bg-purple-400 shadow-sm" />
+                          {tip}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                </div>
+
+                <AdSenseSlot slot="8424458319" className="my-10 min-h-[100px]" />
+
+                <div className="mt-12 flex flex-col gap-4">
+                  <Button size="xl" className="w-full bg-indigo-600 hover:bg-indigo-700 font-black shadow-lg shadow-indigo-100" onClick={handleShare}>
+                    🔗 결과 공유하기
+                  </Button>
+                  <Button asChild size="xl" className="w-full rounded-2xl bg-slate-900 font-black">
+                    <Link href={infoLink} rel="noreferrer">
+                      💼 채용 시장 트렌드 보러가기
+                    </Link>
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    onClick={handleRestart}
+                    className="w-full h-15 font-bold text-slate-400 hover:text-indigo-600"
+                  >
+                    🔄 다시 테스트하기
+                  </Button>
+                </div>
+              </div>
+            </div>
+            <AdSenseSlot slot="8424458319" format="fluid" className="mt-8" />
+          </motion.section>
+        )}
+      </AnimatePresence>
     </div>
   );
 }
-
-function ResultList({ title, items }: { title: string; items: string[] }) {
-  return (
-    <div className="rounded-2xl bg-slate-50 p-5">
-      <h4 className="text-sm font-semibold uppercase tracking-wide text-slate-500">
-        {title}
-      </h4>
-      <ul className="mt-3 space-y-2 text-base text-slate-700">
-        {items.map((item) => (
-          <li key={item} className="flex items-start gap-2">
-            <span className="mt-1 text-indigo-500">•</span>
-            <span>{item}</span>
-          </li>
-        ))}
-      </ul>
-    </div>
-  );
-}
-
-
-
-
-

@@ -2,7 +2,10 @@
 
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
+import { useSearchParams, useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
+import { motion, AnimatePresence } from "framer-motion";
+import { AdSenseSlot } from "@/components/ui/adsense-slot";
 
 type CharacterType = "pm" | "idea" | "fixer" | "insider";
 
@@ -73,51 +76,6 @@ const questions: Question[] = [
       { text: "팀원들과 함께 하며 동기부여", scores: { pm: 1, idea: 1, fixer: 1, insider: 3 } },
     ],
   },
-  {
-    question: "보고서를 작성할 때 가장 중요하게 생각하는 것은?",
-    answers: [
-      { text: "구조화된 형식과 명확한 데이터", scores: { pm: 3, idea: 1, fixer: 1, insider: 1 } },
-      { text: "창의적 인사이트와 새로운 관점", scores: { pm: 1, idea: 3, fixer: 1, insider: 1 } },
-      { text: "정확한 분석과 실용적 해결책", scores: { pm: 1, idea: 1, fixer: 3, insider: 1 } },
-      { text: "이해하기 쉽고 공감되는 스토리", scores: { pm: 1, idea: 1, fixer: 1, insider: 3 } },
-    ],
-  },
-  {
-    question: "팀 내 갈등이 생겼을 때 나는?",
-    answers: [
-      { text: "역할과 책임을 명확히 정리한다", scores: { pm: 3, idea: 1, fixer: 1, insider: 1 } },
-      { text: "새로운 협업 방식을 제안한다", scores: { pm: 1, idea: 3, fixer: 1, insider: 1 } },
-      { text: "객관적 사실을 바탕으로 해결한다", scores: { pm: 1, idea: 1, fixer: 3, insider: 1 } },
-      { text: "대화를 통해 분위기를 완화한다", scores: { pm: 1, idea: 1, fixer: 1, insider: 3 } },
-    ],
-  },
-  {
-    question: "프로젝트가 성공적으로 끝났을 때 가장 기쁜 순간은?",
-    answers: [
-      { text: "모든 일정이 계획대로 완료되었을 때", scores: { pm: 3, idea: 1, fixer: 1, insider: 1 } },
-      { text: "내 아이디어가 실제로 구현되었을 때", scores: { pm: 1, idea: 3, fixer: 1, insider: 1 } },
-      { text: "기술적 문제를 해결하고 안정화되었을 때", scores: { pm: 1, idea: 1, fixer: 3, insider: 1 } },
-      { text: "팀원들과 함께 성취감을 나눌 때", scores: { pm: 1, idea: 1, fixer: 1, insider: 3 } },
-    ],
-  },
-  {
-    question: "업무 스타일은?",
-    answers: [
-      { text: "계획적이고 체계적인 접근", scores: { pm: 3, idea: 1, fixer: 2, insider: 1 } },
-      { text: "유연하고 창의적인 접근", scores: { pm: 1, idea: 3, fixer: 1, insider: 2 } },
-      { text: "논리적이고 실용적인 접근", scores: { pm: 1, idea: 1, fixer: 3, insider: 1 } },
-      { text: "협력적이고 소통 중심 접근", scores: { pm: 1, idea: 2, fixer: 1, insider: 3 } },
-    ],
-  },
-  {
-    question: "동료들이 나에게 가장 많이 하는 말은?",
-    answers: [
-      { text: "\"일정 정리 잘하네요\"", scores: { pm: 3, idea: 1, fixer: 1, insider: 1 } },
-      { text: "\"아이디어가 많으시네요\"", scores: { pm: 1, idea: 3, fixer: 1, insider: 1 } },
-      { text: "\"문제 해결 잘하시네요\"", scores: { pm: 1, idea: 1, fixer: 3, insider: 1 } },
-      { text: "\"분위기 메이커시네요\"", scores: { pm: 1, idea: 1, fixer: 1, insider: 3 } },
-    ],
-  },
 ];
 
 const results: Record<CharacterType, ResultDetail> = {
@@ -125,89 +83,33 @@ const results: Record<CharacterType, ResultDetail> = {
     title: "정리왕 PM형",
     subtitle: "체계적이고 계획적인 프로젝트 관리자!",
     icon: "📋",
-    characteristics: [
-      "일정 관리와 우선순위 설정에 능함",
-      "문서화와 체계화를 중시",
-      "명확한 역할 분담과 책임 소재 파악",
-      "데이터 기반 의사결정 선호",
-    ],
-    suitableFor: [
-      "계획적이고 꼼꼼한 성격",
-      "프로젝트 관리에 관심 있는 사람",
-      "체계적인 업무 환경을 선호하는 사람",
-      "명확한 목표와 기준을 좋아하는 사람",
-    ],
-    tips: [
-      "프로젝트 관리 도구(Jira, Notion 등) 활용 능력 향상",
-      "PMP, CSM 등 프로젝트 관리 자격증 고려",
-      "데이터 분석과 리포팅 스킬 보완",
-    ],
+    characteristics: ["일정과 우선순위 설정의 달인", "문서화와 체계화 선호", "데이터 기반 의사결정"],
+    suitableFor: ["꼼꼼하고 계획적인 사람", "전체 흐름을 보기 좋아하는 사람"],
+    tips: ["프로젝트 관리 도구 마스터하기", "리포팅 스킬 고도화"],
   },
   idea: {
     title: "아이디어 폭탄형",
     subtitle: "창의적이고 혁신적인 기획자!",
     icon: "💡",
-    characteristics: [
-      "다양한 아이디어와 새로운 관점 제시",
-      "트렌드 파악과 시장 인사이트에 강점",
-      "유연하고 적응력이 뛰어남",
-      "혁신적 솔루션을 추구",
-    ],
-    suitableFor: [
-      "창의적이고 상상력이 풍부한 사람",
-      "변화와 도전을 즐기는 사람",
-      "트렌드에 민감한 사람",
-      "다양한 관점을 가진 사람",
-    ],
-    tips: [
-      "디자인 씽킹과 브레인스토밍 기법 학습",
-      "다양한 산업과 트렌드 지속적으로 파악",
-      "아이디어를 실행 가능한 기획안으로 발전시키는 연습",
-    ],
+    characteristics: ["새로운 관점 제시의 귀재", "트렌드 파악 능력 탁월", "유연한 적응력"],
+    suitableFor: ["상상력이 풍부한 사람", "도전을 즐기는 사람"],
+    tips: ["아이디어의 실행력 보완하기", "트렌드 리포트 작성 연습"],
   },
   fixer: {
-    title: "정 silent fixer형",
-    subtitle: "문제 해결과 안정화에 특화된 전문가!",
+    title: "사일런트 픽서형",
+    subtitle: "문제 해결과 안정화의 숨은 고수!",
     icon: "🔧",
-    characteristics: [
-      "기술적 문제 해결에 능함",
-      "논리적 분석과 실용적 접근",
-      "안정성과 품질을 중시",
-      "조용히 일을 처리하는 스타일",
-    ],
-    suitableFor: [
-      "논리적이고 분석적인 사고를 가진 사람",
-      "혼자 집중해서 일하는 것을 선호하는 사람",
-      "기술과 시스템에 관심 있는 사람",
-      "완벽주의 성향이 있는 사람",
-    ],
-    tips: [
-      "기술 스택과 문제 해결 방법론 지속 학습",
-      "코드 리뷰와 품질 관리 프로세스 이해",
-      "기술 문서 작성과 지식 공유 문화 참여",
-    ],
+    characteristics: ["기술적 문제 해결의 핵심", "논리적인 분석력", "조용하고 실용적인 태도"],
+    suitableFor: ["분석적인 사고를 가진 사람", "완벽주의 성향의 전문가"],
+    tips: ["문제 해결 방법론 정리하기", "기술 블로그로 지식 공유"],
   },
   insider: {
     title: "인싸 분위기메이커형",
-    subtitle: "팀워크와 소통을 이끄는 협업 전문가!",
+    subtitle: "팀의 활력소, 최고의 협력 전문가!",
     icon: "😊",
-    characteristics: [
-      "팀 내 분위기 메이킹에 능함",
-      "소통과 협업을 중시",
-      "공감 능력과 리더십이 뛰어남",
-      "다양한 사람들과의 관계 형성",
-    ],
-    suitableFor: [
-      "외향적이고 적극적인 성격",
-      "사람들과의 소통을 즐기는 사람",
-      "팀워크와 협업을 중시하는 사람",
-      "분위기를 읽고 조율하는 능력이 있는 사람",
-    ],
-    tips: [
-      "커뮤니케이션 스킬과 리더십 개발",
-      "팀 빌딩과 협업 도구 활용 능력 향상",
-      "갈등 해결과 중재 스킬 학습",
-    ],
+    characteristics: ["최고의 공감 능력", "팀 분위기 리드", "갈등 중재의 달인"],
+    suitableFor: ["사람을 좋아하는 외향인", "소통이 생명인 사람"],
+    tips: ["리더십 스킬 고도화하기", "커뮤니케이션 전략 학습"],
   },
 };
 
@@ -218,30 +120,28 @@ const initialScores: Record<CharacterType, number> = {
   insider: 0,
 };
 
-const totalQuestions = questions.length;
-
 export function WorkplaceCharacterQuiz() {
+  const router = useRouter();
+  const searchParams = useSearchParams();
   const [step, setStep] = useState<"intro" | "quiz" | "ad" | "result">("intro");
-  const [currentQuestion, setCurrentQuestion] = useState(0);
+  const [currentIdx, setCurrentIdx] = useState(0);
   const [scores, setScores] = useState(initialScores);
   const [isResultButtonEnabled, setIsResultButtonEnabled] = useState(false);
 
+  // URL에서 결과값이 있는지 확인
+  useEffect(() => {
+    const res = searchParams.get("res");
+    if (res && results[res.toLowerCase() as CharacterType]) {
+      setStep("result");
+    }
+  }, [searchParams]);
+
   const bestType = useMemo(() => {
-    return Object.entries(scores).sort(([, a], [, b]) => b - a)[0]?.[0] as
-      | CharacterType
-      | undefined;
+    return Object.entries(scores).sort(([, a], [, b]) => b - a)[0]?.[0] as CharacterType | undefined;
   }, [scores]);
 
   const progress =
-    step === "quiz"
-      ? Math.round(((currentQuestion + 1) / totalQuestions) * 100)
-      : 0;
-
-  const handleStart = () => {
-    setStep("quiz");
-    setCurrentQuestion(0);
-    setScores(initialScores);
-  };
+    step === "quiz" ? Math.round(((currentIdx + 1) / questions.length) * 100) : 0;
 
   const handleAnswer = (answer: Answer) => {
     setScores((prev) => {
@@ -252,182 +152,227 @@ export function WorkplaceCharacterQuiz() {
       return next;
     });
 
-    if (currentQuestion + 1 < totalQuestions) {
-      setCurrentQuestion((prev) => prev + 1);
+    if (currentIdx + 1 < questions.length) {
+      setCurrentIdx((prev) => prev + 1);
     } else {
-      setIsResultButtonEnabled(false);
       setStep("ad");
     }
   };
 
+  const effectiveBest = useMemo(() => {
+    const res = searchParams.get("res");
+    if (res && results[res.toLowerCase() as CharacterType]) return res.toLowerCase() as CharacterType;
+    return Object.entries(scores).sort(([, a], [, b]) => b - a)[0]?.[0] as CharacterType | undefined;
+  }, [scores, searchParams]);
+
   const handleRestart = () => {
+    router.replace("/workplace", { scroll: false });
     setStep("intro");
-    setCurrentQuestion(0);
+    setCurrentIdx(0);
     setScores(initialScores);
     setIsResultButtonEnabled(false);
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
+  const handleShare = async () => {
+    const url = window.location.href;
+    if (navigator.share) {
+      try {
+        await navigator.share({
+          title: `나의 직장인 캐릭터: ${resultData.title}`,
+          text: `회사에서 나는 어떤 캐릭터일까? 지금 확인해보세요! #마음콕 #직장인테스트`,
+          url: url,
+        });
+      } catch (err) {
+        console.error("Error sharing:", err);
+      }
+    } else {
+      try {
+        await navigator.clipboard.writeText(url);
+        alert("결과 주소가 복사되었습니다!");
+      } catch (err) {
+        console.error("Clipboard error:", err);
+      }
+    }
+  };
+
   useEffect(() => {
     if (step === "ad") {
       const timer = setTimeout(() => {
+        const finalBest = Object.entries(scores).sort(([, a], [, b]) => b - a)[0]?.[0] as CharacterType;
+        router.push(`?res=${finalBest}`, { scroll: false });
         setIsResultButtonEnabled(true);
-      }, 5000);
-
+      }, 4000);
       return () => clearTimeout(timer);
     }
-  }, [step]);
+  }, [step, scores, router]);
 
-  const current = questions[currentQuestion];
-  const result = bestType ? results[bestType] : results.pm;
+  const current = questions[currentIdx];
+  const resultData = effectiveBest ? results[effectiveBest] : results.pm;
 
   return (
     <div className="flex flex-col gap-8">
-      {step === "intro" && (
-        <section className="rounded-3xl bg-white p-8 shadow-xl shadow-indigo-50">
-          <div className="space-y-4 text-center">
-            <p className="inline-flex items-center rounded-full bg-indigo-50 px-4 py-1 text-sm font-semibold text-indigo-600">
-              🏢 직장인 캐릭터 테스트
+      <AnimatePresence mode="wait">
+        {step === "intro" && (
+          <motion.section
+            key="intro"
+            initial={{ opacity: 0, y: 15 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -15 }}
+            className="rounded-[2.5rem] bg-white p-10 md:p-14 text-center shadow-2xl border border-blue-50"
+          >
+            <div className="mb-8 mx-auto h-24 w-24 flex items-center justify-center rounded-3xl bg-blue-50 text-5xl shadow-inner shadow-blue-100 animate-bounce-slow">
+              🏢
+            </div>
+            <h2 className="text-3xl font-black text-slate-900 tracking-tight leading-tight">회사생활 캐릭터<br />자가 테스트</h2>
+            <p className="mt-4 text-slate-500 font-bold leading-relaxed">
+              나는 오피스의 어떤 영웅일까요?<br />
+              당신의 오피스 라이프를 데이터로 분석합니다!
             </p>
-            <h2 className="text-3xl font-bold text-slate-900">
-              회사에서 나는 어떤 캐릭터일까?
-            </h2>
-            <p className="text-slate-500">
-              회의·메신저·보고서·야근 상황을 통해 정리왕 PM부터 인싸
-              분위기메이커까지 당신의 직장 내 캐릭터를 분석해 드려요. 소요 시간은
-              약 3분입니다.
-            </p>
-            <Button className="w-full justify-center text-lg" onClick={handleStart}>
-              🚀 테스트 시작하기
-            </Button>
-            <p className="text-xs text-slate-400">
-              * 현재 베타 버전으로, 결과는 참고용입니다.
-            </p>
-          </div>
-        </section>
-      )}
+            <div className="space-y-6">
+              <Button size="xl" className="w-full font-black bg-blue-600 shadow-lg shadow-blue-100" onClick={() => setStep("quiz")}>
+                🚀 내 캐릭터 확인하기
+              </Button>
+              <AdSenseSlot slot="8424458319" className="min-h-[100px]" />
+            </div>
+          </motion.section>
+        )}
 
-      {step === "quiz" && current && (
-        <section className="rounded-3xl bg-white p-6 shadow-lg shadow-indigo-50">
-          <div className="mb-6 h-3 w-full rounded-full bg-slate-100">
-            <div
-              className="h-3 rounded-full bg-gradient-to-r from-indigo-500 to-purple-500 transition-all"
-              style={{ width: `${progress}%` }}
-            />
-          </div>
-          <p className="text-sm font-semibold text-indigo-500">
-            질문 {currentQuestion + 1} / {totalQuestions}
-          </p>
-          <h3 className="mt-3 text-2xl font-bold text-slate-900">
-            {current.question}
-          </h3>
-          <div className="mt-6 grid gap-3">
-            {current.answers.map((answer) => (
-              <button
-                key={answer.text}
-                onClick={() => handleAnswer(answer)}
-                className="rounded-2xl border border-slate-100 bg-slate-50 px-5 py-4 text-left text-base font-semibold text-slate-700 transition hover:-translate-y-1 hover:border-indigo-200 hover:bg-white hover:text-indigo-600"
+        {step === "quiz" && current && (
+          <motion.section
+            key="quiz"
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: -20 }}
+            className="rounded-3xl bg-white p-8 md:p-12 shadow-2xl border border-slate-50"
+          >
+            <div className="mb-10 h-3 w-full overflow-hidden rounded-full bg-slate-100">
+              <motion.div
+                initial={{ width: 0 }}
+                animate={{ width: `${progress}%` }}
+                className="h-full bg-gradient-to-r from-blue-400 via-indigo-500 to-blue-600"
+              />
+            </div>
+            <div className="mb-8">
+              <span className="text-xs font-black text-blue-500 uppercase tracking-[0.3em] block mb-2">Office Insight No.{currentIdx + 1} / {questions.length}</span>
+              <h3 className="text-2xl md:text-3xl font-black text-slate-900 leading-tight">
+                {current.question}
+              </h3>
+            </div>
+            <div className="grid gap-4">
+              {current.answers.map((answer) => (
+                <motion.button
+                  key={answer.text}
+                  whileHover={{ scale: 1.02, x: 4 }}
+                  whileTap={{ scale: 0.98 }}
+                  onClick={() => handleAnswer(answer)}
+                  className="rounded-2xl border-2 border-slate-50 bg-slate-50/50 px-8 py-6 text-left text-lg font-black text-slate-700 hover:border-blue-300 hover:bg-white hover:text-blue-600 transition-all shadow-sm"
+                >
+                  {answer.text}
+                </motion.button>
+              ))}
+            </div>
+          </motion.section>
+        )}
+
+        {step === "ad" && (
+          <motion.section
+            key="ad"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            className="rounded-[2.5rem] bg-indigo-950 p-10 md:p-16 text-center shadow-2xl text-white overflow-hidden relative"
+          >
+            <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_50%_50%,rgba(99,102,241,0.15),transparent_70%)]" />
+            <div className="relative z-10 space-y-10">
+              <div className="flex flex-col items-center">
+                <div className="h-20 w-20 flex items-center justify-center text-5xl animate-pulse mb-6">
+                  📊
+                </div>
+                <h3 className="text-3xl font-black tracking-tight leading-tight">오피스 히어로<br />잠재력을 스캔 중입니다</h3>
+              </div>
+
+              <div className="w-full max-w-md mx-auto bg-white/5 backdrop-blur-sm rounded-[2rem] p-6 border border-white/10 min-h-[300px] flex flex-col items-center justify-center">
+                <p className="text-xs font-black text-blue-300 tracking-widest uppercase mb-4">Corporate DNA Mapping</p>
+                <AdSenseSlot slot="8424458319" className="w-full h-full" />
+              </div>
+
+              <Button
+                size="xl"
+                onClick={() => setStep("result")}
+                className="w-full font-black bg-white text-indigo-950"
+                disabled={!isResultButtonEnabled}
               >
-                {answer.text}
-              </button>
-            ))}
-          </div>
-        </section>
-      )}
-
-      {step === "ad" && (
-        <section className="rounded-3xl bg-white p-8 shadow-xl shadow-indigo-50">
-          <div className="space-y-6 text-center">
-            <div className="text-4xl">⏳</div>
-            <h3 className="text-2xl font-bold text-slate-900">
-              결과를 계산하고 있어요!
-            </h3>
-            <p className="text-slate-500">
-              잠시만 기다려주시면 당신의 직장 내 캐릭터를 분석해드릴게요.
-            </p>
-            <div className="min-h-[250px] w-full" id="ad-before-result" />
-            <Button
-              onClick={() => setStep("result")}
-              className="w-full text-lg"
-              disabled={!isResultButtonEnabled}
-            >
-              {isResultButtonEnabled ? "✨ 결과 보기" : "⏳ 계산 중... (5초)"}
-            </Button>
-          </div>
-        </section>
-      )}
-
-      {step === "result" && (
-        <section className="space-y-6">
-          <div className="rounded-3xl bg-gradient-to-br from-indigo-500 via-purple-500 to-sky-500 p-1 shadow-2xl">
-            <div className="h-full rounded-[22px] bg-white/95 p-8">
-              <div className="text-center">
-                <div className="text-5xl">{result.icon}</div>
-                <h3 className="mt-4 text-3xl font-bold text-slate-900">
-                  {result.title}
-                </h3>
-                <p className="text-lg text-slate-500">{result.subtitle}</p>
-              </div>
-              <div className="mt-8 grid gap-6 md:grid-cols-2">
-                <ResultList title="이 캐릭터의 특징" items={result.characteristics} />
-                <ResultList title="잘 맞는 사람 성향" items={result.suitableFor} />
-              </div>
-              <div className="mt-6 rounded-2xl bg-slate-50 p-6">
-                <h4 className="text-sm font-semibold uppercase tracking-wide text-slate-500">
-                  커리어 방향 제안
-                </h4>
-                <ul className="mt-3 space-y-2 text-base text-slate-700">
-                  {result.tips.map((tip) => (
-                    <li key={tip} className="flex items-start gap-2">
-                      <span className="mt-1 text-indigo-500">•</span>
-                      <span>{tip}</span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-              <Button asChild className="mt-8 w-full text-lg">
-                <Link href={infoLink} rel="noreferrer">
-                  💼 채용 정보 더 보기
-                </Link>
+                {isResultButtonEnabled ? "✨ 분석 리포트 확인하기" : "⏳ 분석 중... (4초)"}
               </Button>
             </div>
-          </div>
+          </motion.section>
+        )}
 
-          <div className="grid gap-4">
-            <div className="min-h-[200px] w-full" id="ad-after-result-top" />
-            <Button
-              onClick={handleRestart}
-              className="w-full bg-gradient-to-r from-pink-500 to-orange-400"
-            >
-              🔄 다시 테스트하기
-            </Button>
-            <div className="min-h-[200px] w-full" id="ad-after-result-bottom" />
-          </div>
-        </section>
-      )}
+        {step === "result" && (
+          <motion.section
+            key="result"
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className="space-y-6"
+          >
+            <div className="overflow-hidden rounded-[3rem] bg-white shadow-[0_32px_64px_-16px_rgba(30,58,138,0.15)] border-8 border-white">
+              <div className="bg-gradient-to-br from-blue-700 via-indigo-700 to-blue-800 p-12 text-center text-white relative">
+                <div className="absolute top-0 right-0 w-32 h-32 bg-white/5 rounded-full -mr-16 -mt-16 blur-3xl" />
+                <div className="mb-6 text-8xl drop-shadow-2xl">{resultData.icon}</div>
+                <h3 className="text-4xl font-black tracking-tight leading-tight">{resultData.title}</h3>
+                <p className="mt-3 text-blue-100/80 font-bold text-xl">{resultData.subtitle}</p>
+              </div>
+              <div className="p-10 md:p-14">
+                <div className="grid gap-8 md:grid-cols-2">
+                  <div className="rounded-[2rem] bg-blue-50/50 p-8 border border-blue-100">
+                    <h4 className="text-xs font-black text-blue-400 uppercase tracking-[0.2em] mb-6">Character Traits</h4>
+                    <ul className="space-y-4">
+                      {resultData.characteristics.map((item) => (
+                        <li key={item} className="flex items-center gap-4 font-black text-slate-700 text-lg">
+                          <span className="h-2.5 w-2.5 rounded-full bg-blue-500 shadow-sm" />
+                          {item}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                  <div className="rounded-[2rem] bg-indigo-50/50 p-8 border border-indigo-100">
+                    <h4 className="text-xs font-black text-indigo-400 uppercase tracking-[0.2em] mb-6">Mastery Tips</h4>
+                    <ul className="space-y-4">
+                      {resultData.tips.map((tip) => (
+                        <li key={tip} className="flex items-center gap-4 font-black text-slate-700 text-lg">
+                          <span className="h-2.5 w-2.5 rounded-full bg-indigo-400 shadow-sm" />
+                          {tip}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                </div>
+
+                <AdSenseSlot slot="8424458319" className="my-10 min-h-[100px]" />
+
+                <div className="mt-12 flex flex-col gap-4">
+                  <Button size="xl" className="w-full bg-blue-600 hover:bg-blue-700 font-black shadow-lg shadow-blue-100" onClick={handleShare}>
+                    🔗 결과 공유하기
+                  </Button>
+                  <Button asChild size="xl" className="w-full rounded-2xl bg-slate-900 hover:bg-black font-black">
+                    <Link href={infoLink} rel="noreferrer">
+                      💼 나에게 맞는 채용 공고 찾기
+                    </Link>
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    onClick={handleRestart}
+                    className="w-full h-15 font-bold text-slate-400 hover:text-blue-600"
+                  >
+                    🔄 다시 테스트하기
+                  </Button>
+                </div>
+              </div>
+            </div>
+            <AdSenseSlot slot="8424458319" format="fluid" className="mt-8" />
+          </motion.section>
+        )}
+      </AnimatePresence>
     </div>
   );
 }
-
-function ResultList({ title, items }: { title: string; items: string[] }) {
-  return (
-    <div className="rounded-2xl bg-slate-50 p-5">
-      <h4 className="text-sm font-semibold uppercase tracking-wide text-slate-500">
-        {title}
-      </h4>
-      <ul className="mt-3 space-y-2 text-base text-slate-700">
-        {items.map((item) => (
-          <li key={item} className="flex items-start gap-2">
-            <span className="mt-1 text-indigo-500">•</span>
-            <span>{item}</span>
-          </li>
-        ))}
-      </ul>
-    </div>
-  );
-}
-
-
-
-
-
