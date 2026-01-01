@@ -283,7 +283,7 @@ export function DatingStyleQuiz() {
                             <Button size="xl" className="w-full bg-gradient-to-r from-pink-500 to-rose-600 font-black shadow-pink-200" onClick={() => setStep("quiz")}>
                                 시작하기
                             </Button>
-                            <AdSenseSlot slot="8424458319" className="min-h-[100px]" />
+                            <AdSenseSlot slot="1777541474" className="min-h-[100px]" />
                         </div>
                     </motion.div>
                 )}
@@ -341,7 +341,7 @@ export function DatingStyleQuiz() {
 
                         <div className="w-full max-w-md bg-white p-6 rounded-3xl shadow-xl border border-slate-100">
                             <p className="text-xs font-black text-slate-400 uppercase tracking-widest mb-4">Sponsored</p>
-                            <AdSenseSlot slot="8424458319" className="min-h-[250px]" />
+                            <AdSenseSlot slot="9839880235" className="min-h-[250px]" />
                         </div>
                     </motion.div>
                 )}
@@ -396,7 +396,7 @@ export function DatingStyleQuiz() {
                                     <p className="text-3xl font-black text-slate-900">{resultData.matching}</p>
                                 </div>
 
-                                <AdSenseSlot slot="8424458319" className="my-10 min-h-[100px]" />
+                                <AdSenseSlot slot="4108191347" className="my-10 min-h-[100px]" />
 
                                 <div className="mt-10 flex flex-col gap-4">
                                     <Button size="xl" className="w-full bg-pink-600 hover:bg-pink-700 font-black shadow-lg shadow-pink-100" onClick={handleShare}>
@@ -416,7 +416,7 @@ export function DatingStyleQuiz() {
                                 </div>
                             </div>
                         </div>
-                        <AdSenseSlot slot="8424458319" format="fluid" className="mt-8" />
+                        <AdSenseSlot slot="8526798560" format="fluid" className="mt-8" />
                     </motion.div>
                 )}
             </AnimatePresence>
