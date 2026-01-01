@@ -164,7 +164,7 @@ export function BurnoutQuiz() {
                             <Button size="xl" className="w-full bg-slate-900 font-black" onClick={() => setStep("quiz")}>
                                 체크 시작하기
                             </Button>
-                            <AdSenseSlot slot="8424458319" className="min-h-[100px]" />
+                            <AdSenseSlot slot="1777541474" className="min-h-[100px]" />
                         </div>
                     </motion.div>
                 )}
@@ -224,7 +224,7 @@ export function BurnoutQuiz() {
                         <p className="mt-4 text-slate-500 font-bold mb-10">내 마음의 온도는 몇 도일까요?</p>
 
                         <div className="w-full max-w-md bg-white p-6 rounded-[2.5rem] shadow-2xl border border-slate-100">
-                            <AdSenseSlot slot="8424458319" className="min-h-[250px]" />
+                            <AdSenseSlot slot="9839880235" className="min-h-[250px]" />
                         </div>
                     </motion.div>
                 )}
@@ -260,7 +260,7 @@ export function BurnoutQuiz() {
                                     </ul>
                                 </div>
 
-                                <AdSenseSlot slot="8424458319" className="my-10 min-h-[100px]" />
+                                <AdSenseSlot slot="4108191347" className="my-10 min-h-[100px]" />
 
                                 <div className="mt-12 flex flex-col gap-4">
                                     <Button size="xl" className="w-full bg-orange-600 hover:bg-orange-700 font-black shadow-lg shadow-orange-100" onClick={handleShare}>
@@ -280,7 +280,7 @@ export function BurnoutQuiz() {
                                 </div>
                             </div>
                         </div>
-                        <AdSenseSlot slot="8424458319" format="fluid" className="mt-8" />
+                        <AdSenseSlot slot="8526798560" format="fluid" className="mt-8" />
                     </motion.div>
                 )}
             </AnimatePresence>

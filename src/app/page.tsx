@@ -195,7 +195,7 @@ export default function Home() {
           </motion.div>
         </section>
 
-        <AdSenseSlot slot="8424458319" className="mb-12 w-full min-h-[100px]" />
+        <AdSenseSlot slot="1777541474" className="mb-12 w-full min-h-[100px]" />
 
         {/* Content Section */}
         <section>
@@ -268,7 +268,7 @@ export default function Home() {
           </motion.div>
         </section>
 
-        <AdSenseSlot slot="8424458319" format="fluid" className="w-full mt-16" />
+        <AdSenseSlot slot="2152961907" format="fluid" className="w-full mt-16" />
 
       </main>
 

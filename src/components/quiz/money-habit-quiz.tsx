@@ -285,7 +285,7 @@ export function MoneyHabitQuiz() {
                 <Button size="xl" className="w-full font-black bg-emerald-600 shadow-lg shadow-emerald-100" onClick={startQuiz}>
                   🚀 테스트 시작하기
                 </Button>
-                <AdSenseSlot slot="8424458319" className="min-h-[100px]" />
+                <AdSenseSlot slot="1777541474" className="min-h-[100px]" />
               </div>
             </div>
           </motion.section>
@@ -346,7 +346,7 @@ export function MoneyHabitQuiz() {
 
               <div className="w-full max-w-md mx-auto bg-slate-50 rounded-[2rem] p-6 border border-slate-100 min-h-[300px] flex flex-col items-center justify-center">
                 <p className="text-xs font-black text-slate-400 tracking-widest uppercase mb-4">Financial Pattern Recognition</p>
-                <AdSenseSlot slot="8424458319" className="w-full h-full" />
+                <AdSenseSlot slot="9839880235" className="w-full h-full" />
               </div>
 
               <Button
@@ -403,7 +403,7 @@ export function MoneyHabitQuiz() {
                   </ul>
                 </div>
 
-                <AdSenseSlot slot="8424458319" className="my-10 min-h-[100px]" />
+                <AdSenseSlot slot="4108191347" className="my-10 min-h-[100px]" />
 
                 <div className="mt-12 flex flex-col gap-4">
                   <Button size="xl" className="w-full bg-emerald-600 hover:bg-emerald-700 font-black shadow-lg shadow-emerald-100" onClick={handleShare}>
@@ -424,7 +424,7 @@ export function MoneyHabitQuiz() {
                 </div>
               </div>
             </div>
-            <AdSenseSlot slot="8424458319" format="fluid" className="mt-8" />
+            <AdSenseSlot slot="8526798560" format="fluid" className="mt-8" />
           </motion.section>
         )}
       </AnimatePresence>
