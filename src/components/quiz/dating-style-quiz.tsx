@@ -316,7 +316,12 @@ const getResult = (mbti: string): ResultContent => {
     return results[mbti.toUpperCase()] || results.ISTJ;
 };
 
-export function DatingStyleQuiz() {
+interface DatingStyleQuizProps {
+    title?: string;
+    description?: string;
+}
+
+export function DatingStyleQuiz({ title, description }: DatingStyleQuizProps) {
     const router = useRouter();
     const searchParams = useSearchParams();
     const [step, setStep] = useState<"intro" | "quiz" | "loading" | "result">("intro");
@@ -460,7 +465,7 @@ export function DatingStyleQuiz() {
     const compatibility = partnerMbti ? getCompatibility(mbti, partnerMbti) : null;
 
     return (
-        <div className="mx-auto w-full max-w-2xl px-4 py-8">
+        <div className="mx-auto w-full max-w-4xl px-4 py-8">
             <AnimatePresence mode="wait">
                 {step === "intro" && (
                     <motion.div
@@ -468,39 +473,78 @@ export function DatingStyleQuiz() {
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         exit={{ opacity: 0, y: -20 }}
-                        className="rounded-[2.5rem] bg-white p-8 md:p-12 text-center shadow-2xl border border-pink-50"
+                        className="flex flex-col gap-8"
                     >
-                        <div className="mb-8 text-7xl animate-bounce-slow">
-                            {partnerMbti ? "💖" : "💘"}
-                        </div>
-                        {partnerMbti ? (
-                            <div className="mb-6">
-                                <div className="inline-block rounded-full bg-pink-50 px-4 py-1.5 text-xs font-black text-pink-600 mb-4 uppercase tracking-widest">
-                                    Matching Invite
+                        {/* Page Header - only shows in intro */}
+                        <header className="space-y-6 text-left">
+                            <nav className="text-sm text-slate-500">
+                                <Link href="/" className="hover:text-pink-600 transition-colors">
+                                    홈
+                                </Link>{" "}
+                                <span aria-hidden>›</span>{" "}
+                                <span className="font-semibold text-slate-800">연애 성향 테스트</span>
+                            </nav>
+
+                            <div className="relative overflow-hidden rounded-3xl bg-white p-6 md:p-8 shadow-xl shadow-pink-50 border border-pink-100">
+                                <div className="absolute top-0 right-0 -mr-10 -mt-10 h-40 w-40 rounded-full bg-pink-50 opacity-50 blur-3xl" />
+                                <div className="relative z-10">
+                                    <p className="text-sm font-bold uppercase tracking-[0.2em] text-pink-500">
+                                        LOVE & SYMBOL
+                                    </p>
+                                    <h1 className="mt-3 text-3xl md:text-4xl font-extrabold text-slate-900 tracking-tight">
+                                        {title || "MBTI 연애 성향 테스트"}
+                                    </h1>
+                                    <p className="mt-4 text-base md:text-lg text-slate-600 leading-relaxed">
+                                        {description || "나의 연애 스타일과 환상의 파트너를 찾아보세요."}
+                                    </p>
+                                    <dl className="mt-6 flex flex-wrap gap-4 text-xs md:text-sm font-medium">
+                                        <div className="flex items-center gap-2 rounded-full bg-pink-50 px-4 py-1.5 text-pink-700">
+                                            ⏱️ <span>약 3분 소요</span>
+                                        </div>
+                                        <div className="flex items-center gap-2 rounded-full bg-indigo-50 px-4 py-1.5 text-indigo-700">
+                                            🧬 <span>16가지 MBTI 매칭</span>
+                                        </div>
+                                        <div className="flex items-center gap-2 rounded-full bg-slate-100 px-4 py-1.5 text-slate-700">
+                                            💖 <span>무료 심리검사</span>
+                                        </div>
+                                    </dl>
                                 </div>
-                                <h2 className="mb-4 text-3xl font-black text-slate-900 tracking-tight leading-tight">
-                                    <span className="text-pink-600">{partnerData?.title}</span>인<br />
-                                    친구가 궁합을 궁금해해요!
-                                </h2>
-                                <p className="text-slate-600 font-medium leading-relaxed">
-                                    테스트를 완료하고 우리 둘의<br />
-                                    환상적인 연애 점수를 확인해보세요.
-                                </p>
                             </div>
-                        ) : (
-                            <>
-                                <h2 className="mb-4 text-4xl font-black text-slate-900 tracking-tight">MBTI 연애 성향<br />테스트</h2>
-                                <p className="mb-10 text-slate-600 font-medium leading-relaxed">
-                                    연애할 때 나는 어떤 유형일까?<br />
-                                    12가지 질문으로 알아보는 나의 연애 스타일!
-                                </p>
-                            </>
-                        )}
-                        <div className="space-y-6">
-                            <Button size="xl" className="w-full bg-gradient-to-r from-pink-500 to-rose-600 font-bold shadow-pink-200 text-white" onClick={() => setStep("quiz")}>
-                                {partnerMbti ? "궁합 확인하러 가기" : "시작하기"}
-                            </Button>
-                            <AdSenseSlot slot="1777541474" className="min-h-[100px]" />
+                        </header>
+
+                        <div className="rounded-[2.5rem] bg-white p-8 md:p-12 text-center shadow-2xl border border-pink-50">
+                            <div className="mb-8 text-7xl animate-bounce-slow">
+                                {partnerMbti ? "💖" : "💘"}
+                            </div>
+                            {partnerMbti ? (
+                                <div className="mb-6">
+                                    <div className="inline-block rounded-full bg-pink-50 px-4 py-1.5 text-xs font-black text-pink-600 mb-4 uppercase tracking-widest">
+                                        Matching Invite
+                                    </div>
+                                    <h2 className="mb-4 text-3xl font-black text-slate-900 tracking-tight leading-tight">
+                                        <span className="text-pink-600">{partnerData?.title}</span>인<br />
+                                        친구가 궁합을 궁금해해요!
+                                    </h2>
+                                    <p className="text-slate-600 font-medium leading-relaxed">
+                                        테스트를 완료하고 우리 둘의<br />
+                                        환상적인 연애 점수를 확인해보세요.
+                                    </p>
+                                </div>
+                            ) : (
+                                <>
+                                    <h2 className="mb-4 text-4xl font-black text-slate-900 tracking-tight">MBTI 연애 성향<br />테스트</h2>
+                                    <p className="mb-10 text-slate-600 font-medium leading-relaxed">
+                                        연애할 때 나는 어떤 유형일까?<br />
+                                        12가지 질문으로 알아보는 나의 연애 스타일!
+                                    </p>
+                                </>
+                            )}
+                            <div className="space-y-6">
+                                <Button size="xl" className="w-full bg-gradient-to-r from-pink-500 to-rose-600 font-bold shadow-pink-200 text-white" onClick={() => setStep("quiz")}>
+                                    {partnerMbti ? "궁합 확인하러 가기" : "시작하기"}
+                                </Button>
+                                <AdSenseSlot slot="1777541474" className="min-h-[100px]" />
+                            </div>
                         </div>
                     </motion.div>
                 )}
@@ -570,7 +614,7 @@ export function DatingStyleQuiz() {
                         key="result"
                         initial={{ opacity: 0, scale: 0.9 }}
                         animate={{ opacity: 1, scale: 1 }}
-                        className="space-y-8"
+                        className="max-w-2xl mx-auto space-y-8"
                     >
                         {partnerMbti && compatibility && (
                             <motion.div
@@ -719,7 +763,7 @@ export function DatingStyleQuiz() {
                         <div className="w-full bg-white/10 rounded-[4rem] p-12 backdrop-blur-lg border border-white/20 text-left mb-12">
                             <h4 className="text-2xl font-black text-white/60 uppercase tracking-widest mb-8">Love DNA Traits</h4>
                             <ul className="space-y-6">
-                                {resultData.traits.map((t, i) => (
+                                {resultData.traits.map((t: string, i: number) => (
                                     <li key={i} className="flex items-center gap-6 text-4xl font-black">
                                         <div className="h-6 w-6 rounded-full bg-white shadow-lg" />
                                         {t}
