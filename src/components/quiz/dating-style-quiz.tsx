@@ -1,11 +1,13 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState, useCallback, useRef } from "react";
 import Link from "next/link";
 import { useSearchParams, useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { motion, AnimatePresence } from "framer-motion";
 import { AdSenseSlot } from "@/components/ui/adsense-slot";
+import { toPng } from "html-to-image";
+import { Share2, Download, Heart, Zap, RotateCcw } from "lucide-react";
 
 type MBTIDimension = "EI" | "SN" | "TF" | "JP";
 
@@ -277,6 +279,39 @@ const results: Record<string, ResultContent> = {
     },
 };
 
+// MBTI 궁합 데이터 (간소화 버전)
+// 5: 환상의 쿵짝, 4: 아주 좋은 관계, 3: 그럭저럭 괜찮음, 2: 음... 글쎄요, 1: 파란만장한 관계
+const compatibilityScores: Record<string, Record<string, number>> = {
+    ISTJ: { ESFP: 5, ESTP: 5, ISFP: 4, ISTP: 4, ISFJ: 3, ISTJ: 3, ESFJ: 3, ESTJ: 3, ENFP: 2, ENFJ: 2, INFP: 2, INFJ: 2, ENTP: 1, ENTJ: 1, INTP: 1, INTJ: 1 },
+    ISFJ: { ESFP: 5, ESTP: 5, ISFP: 4, ISTP: 4, ISFJ: 3, ISTJ: 3, ESFJ: 3, ESTJ: 3, ENFP: 2, ENFJ: 2, INFP: 2, INFJ: 2, ENTP: 1, ENTJ: 1, INTP: 1, INTJ: 1 },
+    INFJ: { ENFP: 5, ENTP: 5, INFP: 4, INFJ: 4, ENFJ: 4, ENTJ: 4, INTP: 4, INTJ: 4, ISFP: 2, ISTP: 2, ESFP: 1, ESTP: 1, ISFJ: 1, ISTJ: 1, ESFJ: 1, ESTJ: 1 },
+    INTJ: { ENFP: 5, ENTP: 5, INFP: 4, INFJ: 4, ENFJ: 4, ENTJ: 4, INTP: 4, INTJ: 4, ISFP: 2, ISTP: 2, ESFP: 1, ESTP: 1, ISFJ: 1, ISTJ: 1, ESFJ: 1, ESTJ: 1 },
+    ISTP: { ESFJ: 5, ESTJ: 5, ISFJ: 4, ISTJ: 4, ISFP: 3, ISTP: 3, ESFP: 3, ESTP: 3, ENFP: 2, ENFJ: 2, INFP: 2, INFJ: 2, ENTP: 1, ENTJ: 1, INTP: 1, INTJ: 1 },
+    ISFP: { ENFJ: 5, ESFJ: 5, ESTJ: 5, INFJ: 4, ISFJ: 4, ISTJ: 4, ISFP: 3, ISTP: 3, ESFP: 3, ESTP: 3, ENFP: 2, INFP: 2, ENTP: 1, ENTJ: 1, INTP: 1, INTJ: 1 },
+    INFP: { ENFJ: 5, ENTJ: 5, INFJ: 4, INTJ: 4, INFP: 4, ENFP: 4, ENTP: 4, INTP: 4, ISFP: 2, ISTP: 2, ESFP: 1, ESTP: 1, ISFJ: 1, ISTJ: 1, ESFJ: 1, ESTJ: 1 },
+    INTP: { ENTJ: 5, ESTJ: 5, INTJ: 4, INFJ: 4, INTP: 4, ENTP: 4, ENFP: 4, INFP: 4, ISFP: 2, ISTP: 2, ESFP: 1, ESTP: 1, ISFJ: 1, ISTJ: 1, ESFJ: 1 },
+    ESTP: { ISFJ: 5, ISTJ: 5, ESFJ: 4, ESTJ: 4, ESFP: 3, ESTP: 3, ISFP: 3, ISTP: 3, ENFP: 2, ENFJ: 2, INFP: 2, INFJ: 2, ENTP: 1, ENTJ: 1, INTP: 1, INTJ: 1 },
+    ESFP: { ISFJ: 5, ISTJ: 5, ESFJ: 4, ESTJ: 4, ESFP: 3, ESTP: 3, ISFP: 3, ISTP: 3, ENFP: 2, ENFJ: 2, INFP: 2, INFJ: 2, ENTP: 1, ENTJ: 1, INTP: 1, INTJ: 1 },
+    ENFP: { INFJ: 5, INTJ: 5, ENFP: 4, ENFJ: 4, INFP: 4, ENTP: 4, INTP: 4, ENTJ: 4, ISFP: 2, ISTP: 2, ESFP: 1, ESTP: 1, ISFJ: 1, ISTJ: 1, ESFJ: 1, ESTJ: 1 },
+    ENTP: { INFJ: 5, INTJ: 5, ENFP: 4, ENFJ: 4, INFP: 4, ENTP: 4, INTP: 4, ENTJ: 4, ISFP: 2, ISTP: 2, ESFP: 1, ESTP: 1, ISFJ: 1, ISTJ: 1, ESFJ: 1, ESTJ: 1 },
+    ESTJ: { ISFP: 5, ISTP: 5, INTP: 5, ISFJ: 4, ISTJ: 4, ESFJ: 4, ESTJ: 4, ESFP: 3, ESTP: 3, ENFP: 2, ENFJ: 2, INFP: 2, INFJ: 2, ENTP: 1, ENTJ: 1, INTJ: 1 },
+    ESFJ: { ISFP: 5, ISTP: 5, ISFJ: 4, ISTJ: 4, ESFJ: 4, ESTJ: 4, ESFP: 3, ESTP: 3, ENFP: 2, ENFJ: 2, INFP: 2, INFJ: 2, ENTP: 1, ENTJ: 1, INTP: 1, INTJ: 1 },
+    ENFJ: { INFP: 5, ISFP: 5, INFJ: 4, INTJ: 4, ENFJ: 4, ENFP: 4, ENTP: 4, INTP: 4, ISFJ: 2, ISTJ: 2, ESFP: 1, ESTP: 1, ESFJ: 1, ESTJ: 1 },
+    ENTJ: { INFP: 5, INTP: 5, INFJ: 4, INTJ: 4, ENFJ: 4, ENFP: 4, ENTP: 4, ISFP: 2, ISTP: 2, ESFP: 1, ESTP: 1, ISFJ: 1, ISTJ: 1, ESFJ: 1, ESTJ: 1 },
+};
+
+const getCompatibility = (mbtiA: string, mbtiB: string) => {
+    const score = compatibilityScores[mbtiA.toUpperCase()]?.[mbtiB.toUpperCase()] || 3;
+    const labels: Record<number, { score: number, text: string, color: string }> = {
+        5: { score: 95, text: "환상의 찰떡궁합! 💖", color: "text-pink-600" },
+        4: { score: 80, text: "아주 좋은 케미예요! ✨", color: "text-rose-500" },
+        3: { score: 60, text: "무난하고 평화로운 사이 🌿", color: "text-emerald-500" },
+        2: { score: 40, text: "노력이 조금 필요할지도...? 🤔", color: "text-amber-500" },
+        1: { score: 20, text: "파란만장한 도전적 관계 ⚡", color: "text-slate-500" },
+    };
+    return labels[score];
+};
+
 const getResult = (mbti: string): ResultContent => {
     return results[mbti.toUpperCase()] || results.ISTJ;
 };
@@ -287,6 +322,15 @@ export function DatingStyleQuiz() {
     const [step, setStep] = useState<"intro" | "quiz" | "loading" | "result">("intro");
     const [currentIdx, setCurrentIdx] = useState(0);
     const [scores, setScores] = useState({ EI: 0, SN: 0, TF: 0, JP: 0 });
+    const [isGenerating, setIsGenerating] = useState(false);
+    const storyCardRef = useRef<HTMLDivElement>(null);
+
+    // 파트너 정보
+    const partnerMbti = useMemo(() => {
+        const p = searchParams.get("partner");
+        return p ? p.toUpperCase() : null;
+    }, [searchParams]);
+    const partnerName = searchParams.get("name") || "누군가";
 
     // URL에서 결과값이 있는지 확인
     useEffect(() => {
@@ -329,12 +373,14 @@ export function DatingStyleQuiz() {
                     (scores.TF >= 0 ? "T" : "F") +
                     (scores.JP >= 0 ? "J" : "P");
 
-                router.push(`?res=${finalMbti}`, { scroll: false });
+                const params = new URLSearchParams(searchParams.toString());
+                params.set("res", finalMbti);
+                router.push(`?${params.toString()}`, { scroll: false });
                 setStep("result");
             }, 4000);
             return () => clearTimeout(timer);
         }
-    }, [step, scores, router]);
+    }, [step, scores, router, searchParams]);
 
     const handleShare = async () => {
         const url = window.location.href;
@@ -358,8 +404,60 @@ export function DatingStyleQuiz() {
         }
     };
 
+    const handleDownloadStoryCard = useCallback(async () => {
+        if (!storyCardRef.current) return;
+
+        setIsGenerating(true);
+        try {
+            const dataUrl = await toPng(storyCardRef.current, {
+                cacheBust: true,
+                width: 1080,
+                height: 1920,
+                style: {
+                    transform: "scale(1)",
+                    transformOrigin: "top left",
+                }
+            });
+            const link = document.createElement("a");
+            link.download = `mind-zucca-love-${mbti}.png`;
+            link.href = dataUrl;
+            link.click();
+        } catch (err) {
+            console.error("Error generating image:", err);
+            alert("이미지 생성 중 오류가 발생했습니다. 다시 시도해주세요.");
+        } finally {
+            setIsGenerating(false);
+        }
+    }, [mbti]);
+
+    const handlePartnerShare = async () => {
+        const baseUrl = window.location.origin + window.location.pathname;
+        const shareUrl = `${baseUrl}?partner=${mbti}`;
+
+        if (navigator.share) {
+            try {
+                await navigator.share({
+                    title: "우리 궁합은 어떨까?",
+                    text: `내가 보낸 연애 성향 테스트! 너랑 나랑 얼마나 잘 맞는지 확인해봐 💘`,
+                    url: shareUrl,
+                });
+            } catch (err) {
+                console.error("Error sharing:", err);
+            }
+        } else {
+            try {
+                await navigator.clipboard.writeText(shareUrl);
+                alert("친구용 공유 주소가 복사되었습니다! 친구에게 전달해주세요.");
+            } catch (err) {
+                console.error("Clipboard error:", err);
+            }
+        }
+    };
+
     const progress = Math.round(((currentIdx + 1) / questions.length) * 100);
     const resultData = getResult(mbti);
+    const partnerData = partnerMbti ? getResult(partnerMbti) : null;
+    const compatibility = partnerMbti ? getCompatibility(mbti, partnerMbti) : null;
 
     return (
         <div className="mx-auto w-full max-w-2xl px-4 py-8">
@@ -372,15 +470,35 @@ export function DatingStyleQuiz() {
                         exit={{ opacity: 0, y: -20 }}
                         className="rounded-[2.5rem] bg-white p-8 md:p-12 text-center shadow-2xl border border-pink-50"
                     >
-                        <div className="mb-8 text-7xl animate-bounce-slow">💘</div>
-                        <h2 className="mb-4 text-4xl font-black text-slate-900 tracking-tight">MBTI 연애 성향<br />테스트</h2>
-                        <p className="mb-10 text-slate-600 font-medium leading-relaxed">
-                            연애할 때 나는 어떤 유형일까?<br />
-                            12가지 질문으로 알아보는 나의 연애 스타일!
-                        </p>
+                        <div className="mb-8 text-7xl animate-bounce-slow">
+                            {partnerMbti ? "💖" : "💘"}
+                        </div>
+                        {partnerMbti ? (
+                            <div className="mb-6">
+                                <div className="inline-block rounded-full bg-pink-50 px-4 py-1.5 text-xs font-black text-pink-600 mb-4 uppercase tracking-widest">
+                                    Matching Invite
+                                </div>
+                                <h2 className="mb-4 text-3xl font-black text-slate-900 tracking-tight leading-tight">
+                                    <span className="text-pink-600">{partnerData?.title}</span>인<br />
+                                    친구가 궁합을 궁금해해요!
+                                </h2>
+                                <p className="text-slate-600 font-medium leading-relaxed">
+                                    테스트를 완료하고 우리 둘의<br />
+                                    환상적인 연애 점수를 확인해보세요.
+                                </p>
+                            </div>
+                        ) : (
+                            <>
+                                <h2 className="mb-4 text-4xl font-black text-slate-900 tracking-tight">MBTI 연애 성향<br />테스트</h2>
+                                <p className="mb-10 text-slate-600 font-medium leading-relaxed">
+                                    연애할 때 나는 어떤 유형일까?<br />
+                                    12가지 질문으로 알아보는 나의 연애 스타일!
+                                </p>
+                            </>
+                        )}
                         <div className="space-y-6">
-                            <Button size="xl" className="w-full bg-gradient-to-r from-pink-500 to-rose-600 font-black shadow-pink-200" onClick={() => setStep("quiz")}>
-                                시작하기
+                            <Button size="xl" className="w-full bg-gradient-to-r from-pink-500 to-rose-600 font-bold shadow-pink-200 text-white" onClick={() => setStep("quiz")}>
+                                {partnerMbti ? "궁합 확인하러 가기" : "시작하기"}
                             </Button>
                             <AdSenseSlot slot="1777541474" className="min-h-[100px]" />
                         </div>
@@ -435,7 +553,9 @@ export function DatingStyleQuiz() {
                             <div className="absolute inset-0 animate-ping rounded-full bg-pink-100" />
                             <div className="relative flex h-full w-full items-center justify-center rounded-full bg-white text-5xl shadow-lg">✨</div>
                         </div>
-                        <h3 className="text-2xl font-black text-slate-900">당신의 연애 DNA를<br />분석하고 있어요</h3>
+                        <h3 className="text-2xl font-black text-slate-900">
+                            {partnerMbti ? "우리 둘의 궁합을" : "당신의 연애 DNA를"}<br />분석하고 있어요
+                        </h3>
                         <p className="mt-4 text-slate-500 font-bold mb-8">잠시만 기다려주세요!</p>
 
                         <div className="w-full max-w-md bg-white p-6 rounded-3xl shadow-xl border border-slate-100">
@@ -452,8 +572,35 @@ export function DatingStyleQuiz() {
                         animate={{ opacity: 1, scale: 1 }}
                         className="space-y-8"
                     >
+                        {partnerMbti && compatibility && (
+                            <motion.div
+                                initial={{ y: 20, opacity: 0 }}
+                                animate={{ y: 0, opacity: 1 }}
+                                className="overflow-hidden rounded-[3rem] bg-gradient-to-br from-indigo-600 to-violet-700 p-8 text-center text-white shadow-2xl"
+                            >
+                                <div className="mb-4 text-xs font-black uppercase tracking-[0.3em] opacity-80">Chemistry Match</div>
+                                <div className="mb-6 flex items-center justify-center gap-6">
+                                    <div className="flex flex-col items-center gap-2">
+                                        <div className="text-5xl">{resultData.image}</div>
+                                        <div className="text-xs font-bold bg-white/20 px-3 py-1 rounded-full">{mbti}</div>
+                                    </div>
+                                    <div className="text-4xl animate-pulse">❤️</div>
+                                    <div className="flex flex-col items-center gap-2">
+                                        <div className="text-5xl">{partnerData?.image}</div>
+                                        <div className="text-xs font-bold bg-white/20 px-3 py-1 rounded-full">{partnerMbti}</div>
+                                    </div>
+                                </div>
+                                <h3 className="text-4xl font-black mb-2">{compatibility.score}%</h3>
+                                <p className="text-xl font-bold text-indigo-100">{compatibility.text}</p>
+
+                                <div className="mt-6 rounded-2xl bg-white/10 p-4 text-sm font-medium leading-relaxed text-indigo-50">
+                                    {mbti}와 {partnerMbti}는 서로의 부족한 점을 채워주는 보완적인 관계가 될 수 있어요. 함께 있을 때 새로운 시너지가 폭발할 거예요!
+                                </div>
+                            </motion.div>
+                        )}
+
                         <div className="overflow-hidden rounded-[3rem] bg-white shadow-2xl border-8 border-white">
-                            <div className="bg-gradient-to-br from-pink-500 to-rose-600 p-12 text-center text-white relative">
+                            <div className="bg-gradient-to-br from-pink-500 to-rose-600 p-8 md:p-10 text-center text-white relative">
                                 <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -mr-16 -mt-16 blur-3xl" />
                                 <div className="mb-6 text-8xl drop-shadow-2xl">{resultData.image}</div>
                                 <div className="inline-block rounded-full bg-white/20 px-6 py-1.5 text-sm font-black backdrop-blur-md">
@@ -462,53 +609,81 @@ export function DatingStyleQuiz() {
                                 <h2 className="mt-6 text-4xl font-black tracking-tight">{resultData.title}</h2>
                                 <p className="mt-2 text-pink-100 font-bold text-lg">{resultData.subtitle}</p>
                             </div>
-                            <div className="p-8 md:p-12">
+                            <div className="p-6 md:p-10">
                                 <p className="text-xl leading-relaxed text-slate-700 font-medium">{resultData.description}</p>
 
                                 <div className="mt-10 grid gap-6 md:grid-cols-2">
-                                    <div className="rounded-[2rem] bg-pink-50/50 p-8 border border-pink-100">
+                                    <div className="rounded-[2rem] bg-pink-50/50 p-6 border border-pink-100">
                                         <h4 className="text-xs font-black text-pink-400 uppercase tracking-widest mb-4">Love Traits</h4>
                                         <ul className="space-y-4">
                                             {resultData.traits.map((t, i) => (
-                                                <li key={i} className="flex items-center gap-4 text-slate-700 font-bold">
-                                                    <span className="h-3 w-3 rounded-full bg-pink-400 shadow-sm" />
-                                                    {t}
+                                                <li key={i} className="flex items-start gap-4 text-slate-700 font-bold leading-relaxed">
+                                                    <span className="mt-1.5 h-3 w-3 shrink-0 rounded-full bg-pink-400 shadow-sm" />
+                                                    <span>{t}</span>
                                                 </li>
                                             ))}
                                         </ul>
                                     </div>
-                                    <div className="rounded-[2rem] bg-indigo-50/50 p-8 border border-indigo-100">
+                                    <div className="rounded-[2rem] bg-indigo-50/50 p-6 border border-indigo-100">
                                         <h4 className="text-xs font-black text-indigo-400 uppercase tracking-widest mb-4">Growth Tips</h4>
                                         <ul className="space-y-4">
                                             {resultData.tips.map((t, i) => (
-                                                <li key={i} className="flex items-center gap-4 text-slate-700 font-bold">
-                                                    <span className="h-3 w-3 rounded-full bg-indigo-400 shadow-sm" />
-                                                    {t}
+                                                <li key={i} className="flex items-start gap-4 text-slate-700 font-bold leading-relaxed">
+                                                    <span className="mt-1.5 h-3 w-3 shrink-0 rounded-full bg-indigo-400 shadow-sm" />
+                                                    <span>{t}</span>
                                                 </li>
                                             ))}
                                         </ul>
                                     </div>
                                 </div>
 
-                                <div className="mt-10 rounded-[2rem] border-4 border-dashed border-slate-100 p-10 text-center bg-slate-50/30">
-                                    <h4 className="text-xs font-black uppercase tracking-[0.3em] text-slate-400 mb-2">환상의 케미 짝꿍</h4>
-                                    <p className="text-3xl font-black text-slate-900">{resultData.matching}</p>
-                                </div>
+                                {!partnerMbti && (
+                                    <div className="mt-10 rounded-[2rem] border-4 border-dashed border-slate-100 p-10 text-center bg-slate-50/30">
+                                        <h4 className="text-xs font-black uppercase tracking-[0.3em] text-slate-400 mb-2">환상의 케미 짝꿍</h4>
+                                        <p className="text-3xl font-black text-slate-900">{resultData.matching}</p>
+                                    </div>
+                                )}
 
                                 <AdSenseSlot slot="4108191347" className="my-10 min-h-[100px]" />
 
                                 <div className="mt-10 flex flex-col gap-4">
-                                    <Button size="xl" className="w-full bg-pink-600 hover:bg-pink-700 font-black shadow-lg shadow-pink-100" onClick={handleShare}>
-                                        🔗 결과 공유하기
+                                    <Button size="xl" className="relative w-full bg-pink-600 hover:bg-pink-700 font-bold shadow-lg shadow-pink-100 overflow-hidden" onClick={handleShare}>
+                                        <div className="absolute left-6 top-1/2 -translate-y-1/2">
+                                            <Share2 className="w-5 h-5 text-white" />
+                                        </div>
+                                        <span className="w-full text-center whitespace-nowrap text-[15px] md:text-lg text-white">결과 공유하기</span>
                                     </Button>
-                                    <Button size="xl" variant="outline" className="w-full border-2 font-black" onClick={() => {
+
+                                    <Button size="xl" variant="outline" className="relative w-full border-2 border-pink-200 text-pink-600 hover:bg-pink-50 font-bold shadow-sm overflow-hidden" onClick={handleDownloadStoryCard} disabled={isGenerating}>
+                                        <div className="absolute left-6 top-1/2 -translate-y-1/2">
+                                            <Download className="w-5 h-5 text-pink-600" />
+                                        </div>
+                                        <span className="w-full text-center whitespace-nowrap text-[15px] md:text-lg">
+                                            {isGenerating ? "이미지 생성 중..." : "인스타 스토리 카드 저장"}
+                                        </span>
+                                    </Button>
+
+                                    <Button size="xl" className="relative w-full bg-indigo-500 hover:bg-indigo-600 text-white font-bold shadow-lg shadow-indigo-100 overflow-hidden !text-white" onClick={handlePartnerShare}>
+                                        <div className="absolute left-6 top-1/2 -translate-y-1/2">
+                                            <Heart className="w-5 h-5 fill-current text-white" />
+                                        </div>
+                                        <span className="w-full text-center whitespace-nowrap text-[15px] md:text-lg">
+                                            {partnerMbti ? "다른 친구와 궁합보기" : "친구와 궁합 매칭하기"}
+                                        </span>
+                                    </Button>
+
+                                    <Button size="xl" variant="outline" className="relative w-full border-2 border-slate-200 text-slate-600 hover:bg-slate-50 font-bold overflow-hidden" onClick={() => {
                                         router.replace("/dating", { scroll: false });
                                         setStep("intro");
                                         setCurrentIdx(0);
                                         setScores({ EI: 0, SN: 0, TF: 0, JP: 0 });
                                     }}>
-                                        🔄 다시 테스트하기
+                                        <div className="absolute left-6 top-1/2 -translate-y-1/2">
+                                            <RotateCcw className="w-5 h-5 text-slate-600" />
+                                        </div>
+                                        <span className="w-full text-center whitespace-nowrap text-[15px] md:text-lg">다시 테스트하기</span>
                                     </Button>
+
                                     <Button variant="ghost" className="text-slate-400 font-bold" asChild>
                                         <Link href="/">다른 테스트 보러가기</Link>
                                     </Button>
@@ -519,6 +694,47 @@ export function DatingStyleQuiz() {
                     </motion.div>
                 )}
             </AnimatePresence>
+
+            {/* Hidden Insta Story Card for Export */}
+            <div className="fixed left-[-9999px] top-[-9999px]">
+                <div
+                    ref={storyCardRef}
+                    className="flex flex-col bg-gradient-to-br from-pink-500 to-rose-600 text-white"
+                    style={{ width: "1080px", height: "1920px", padding: "80px" }}
+                >
+                    <div className="flex-1 flex flex-col items-center justify-center text-center">
+                        <div className="mb-12 text-[240px] drop-shadow-2xl animate-bounce-slow">
+                            {resultData.image}
+                        </div>
+                        <div className="inline-block rounded-full bg-white/20 px-12 py-3 text-4xl font-black backdrop-blur-md mb-8">
+                            {mbti} Type
+                        </div>
+                        <h2 className="text-8xl font-black tracking-tight mb-4 leading-tight">
+                            {resultData.title}
+                        </h2>
+                        <p className="text-4xl text-pink-100 font-bold mb-16 italic">
+                            "{resultData.subtitle}"
+                        </p>
+
+                        <div className="w-full bg-white/10 rounded-[4rem] p-12 backdrop-blur-lg border border-white/20 text-left mb-12">
+                            <h4 className="text-2xl font-black text-white/60 uppercase tracking-widest mb-8">Love DNA Traits</h4>
+                            <ul className="space-y-6">
+                                {resultData.traits.map((t, i) => (
+                                    <li key={i} className="flex items-center gap-6 text-4xl font-black">
+                                        <div className="h-6 w-6 rounded-full bg-white shadow-lg" />
+                                        {t}
+                                    </li>
+                                ))}
+                            </ul>
+                        </div>
+
+                        <div className="mt-auto pt-20">
+                            <p className="text-2xl font-black tracking-[0.4em] text-white/40 uppercase mb-4">MIND ZUCCA TEST</p>
+                            <p className="text-3xl font-black">mind.zucca100.com</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     );
 }
