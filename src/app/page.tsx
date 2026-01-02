@@ -92,7 +92,7 @@ const itemVariants = {
 
 export default function Home() {
   return (
-    <div className="relative min-h-screen bg-[#F8FAFC] font-noto-sans overflow-hidden">
+    <div className="relative min-h-screen bg-[#F8FAFC] font-noto-sans overflow-x-hidden">
       {/* Background Decorative Elements */}
       <div className="fixed inset-0 pointer-events-none overflow-hidden">
         <div className="absolute top-[-10%] right-[-10%] w-[40%] h-[40%] bg-blue-100/50 rounded-full blur-[120px]" />
