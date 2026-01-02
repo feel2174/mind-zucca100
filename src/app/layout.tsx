@@ -1,21 +1,22 @@
 import type { Metadata } from "next";
 import Script from "next/script";
-import { Nanum_Gothic, Noto_Sans_KR } from "next/font/google";
+import { IBM_Plex_Sans_KR, Gowun_Dodum } from "next/font/google";
 import { Analytics } from "@vercel/analytics/next";
 import "./globals.css";
 
-const nanumGothic = Nanum_Gothic({
-  subsets: ["latin"],
-  weight: ["400", "700", "800"],
-  variable: "--font-nanum-gothic",
+const ibmPlexSans = IBM_Plex_Sans_KR({
+  weight: ["300", "400", "500", "600", "700"],
+  variable: "--font-ibm-plex",
   display: "swap",
+  subsets: ["latin"], // Note: IBM Plex Sans KR often needs specific subsetting or non-preloading for CJK
+  preload: false,
 });
 
-const notoSans = Noto_Sans_KR({
-  subsets: ["latin"],
-  weight: ["400", "500", "700"],
-  variable: "--font-noto-sans",
+const gowunDodum = Gowun_Dodum({
+  weight: ["400"],
+  variable: "--font-gowun-dodum",
   display: "swap",
+  preload: false,
 });
 
 const siteName = "마음콕 심리테스트";
@@ -125,7 +126,7 @@ export default function RootLayout({
         <meta name="naver-site-verification" content="c3c33666e6bd71a25a863f9a974bbea64792fc98" />
       </head>
       <body
-        className={`${nanumGothic.variable} ${notoSans.variable} bg-slate-50 text-slate-900 antialiased`}
+        className={`${ibmPlexSans.variable} ${gowunDodum.variable} bg-slate-50 text-slate-900 antialiased`}
       >
         <Script
           async
