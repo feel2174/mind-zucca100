@@ -87,44 +87,8 @@ export default function DatingTestPage() {
     return (
         <div className="min-h-screen px-4 py-12 md:px-6 bg-slate-50">
             <article className="mx-auto flex w-full max-w-4xl flex-col gap-8">
-                <header className="space-y-6">
-                    <nav className="text-sm text-slate-500">
-                        <Link href="/" className="hover:text-pink-600 transition-colors">
-                            홈
-                        </Link>{" "}
-                        <span aria-hidden>›</span>{" "}
-                        <span className="font-semibold text-slate-800">연애 성향 테스트</span>
-                    </nav>
-
-                    <div className="relative overflow-hidden rounded-3xl bg-white p-8 shadow-xl shadow-pink-50 border border-pink-100">
-                        <div className="absolute top-0 right-0 -mr-10 -mt-10 h-40 w-40 rounded-full bg-pink-50 opacity-50 blur-3xl" />
-                        <div className="relative z-10">
-                            <p className="text-sm font-bold uppercase tracking-[0.2em] text-pink-500">
-                                LOVE & SYMBOL
-                            </p>
-                            <h1 className="mt-3 text-4xl font-extrabold text-slate-900 tracking-tight">
-                                {pageTitle}
-                            </h1>
-                            <p className="mt-4 text-lg text-slate-600 leading-relaxed">
-                                {pageDescription}
-                            </p>
-                            <dl className="mt-6 flex flex-wrap gap-4 text-sm font-medium">
-                                <div className="flex items-center gap-2 rounded-full bg-pink-50 px-4 py-1.5 text-pink-700">
-                                    ⏱️ <span>약 3분 소요</span>
-                                </div>
-                                <div className="flex items-center gap-2 rounded-full bg-indigo-50 px-4 py-1.5 text-indigo-700">
-                                    🧬 <span>16가지 MBTI 매칭</span>
-                                </div>
-                                <div className="flex items-center gap-2 rounded-full bg-slate-100 px-4 py-1.5 text-slate-700">
-                                    💖 <span>무료 심리검사</span>
-                                </div>
-                            </dl>
-                        </div>
-                    </div>
-                </header>
-
                 <Suspense fallback={<div className="flex h-64 items-center justify-center font-bold text-pink-400">테스트 준비 중...</div>}>
-                    <DatingStyleQuiz />
+                    <DatingStyleQuiz title={pageTitle} description={pageDescription} />
                 </Suspense>
             </article>
 
