@@ -23,6 +23,7 @@ export interface ZodiacResult {
     worstMatch: string;
     image: string; // Emoji
     color: string; // Gradient class
+    luckKeyword: string; // 2026 Viral Keyword
 }
 
 export const zodiacQuestions: Question[] = [
@@ -160,7 +161,8 @@ export const zodiacResults: Record<string, ZodiacResult> = {
         bestMatch: "Dragon",
         worstMatch: "Horse",
         image: "🐭",
-        color: "from-slate-500 to-zinc-600"
+        color: "from-slate-500 to-zinc-600",
+        luckKeyword: "재물운 폭발"
     },
     Ox: {
         animal: "Ox",
@@ -173,7 +175,8 @@ export const zodiacResults: Record<string, ZodiacResult> = {
         bestMatch: "Rooster",
         worstMatch: "Sheep",
         image: "🐮",
-        color: "from-amber-600 to-orange-700"
+        color: "from-amber-600 to-orange-700",
+        luckKeyword: "대기만성 성공"
     },
     Tiger: {
         animal: "Tiger",
@@ -186,7 +189,8 @@ export const zodiacResults: Record<string, ZodiacResult> = {
         bestMatch: "Horse",
         worstMatch: "Monkey",
         image: "🐯",
-        color: "from-orange-500 to-red-600"
+        color: "from-orange-500 to-red-600",
+        luckKeyword: "승진과 명예"
     },
     Rabbit: {
         animal: "Rabbit",
@@ -199,7 +203,8 @@ export const zodiacResults: Record<string, ZodiacResult> = {
         bestMatch: "Sheep",
         worstMatch: "Rooster",
         image: "🐰",
-        color: "from-pink-400 to-rose-500"
+        color: "from-pink-400 to-rose-500",
+        luckKeyword: "인기 급상승"
     },
     Dragon: {
         animal: "Dragon",
@@ -212,7 +217,8 @@ export const zodiacResults: Record<string, ZodiacResult> = {
         bestMatch: "Rat",
         worstMatch: "Dog",
         image: "🐲",
-        color: "from-emerald-500 to-green-600"
+        color: "from-emerald-500 to-green-600",
+        luckKeyword: "초대박 기운"
     },
     Snake: {
         animal: "Snake",
@@ -225,7 +231,8 @@ export const zodiacResults: Record<string, ZodiacResult> = {
         bestMatch: "Rooster",
         worstMatch: "Pig",
         image: "🐍",
-        color: "from-emerald-600 to-teal-700"
+        color: "from-emerald-600 to-teal-700",
+        luckKeyword: "횡재수 당첨"
     },
     Horse: {
         animal: "Horse",
@@ -238,7 +245,8 @@ export const zodiacResults: Record<string, ZodiacResult> = {
         bestMatch: "Tiger",
         worstMatch: "Rat",
         image: "🦄",
-        color: "from-blue-500 to-indigo-600"
+        color: "from-blue-500 to-indigo-600",
+        luckKeyword: "새로운 도전"
     },
     Sheep: {
         animal: "Sheep",
@@ -251,7 +259,8 @@ export const zodiacResults: Record<string, ZodiacResult> = {
         bestMatch: "Rabbit",
         worstMatch: "Ox",
         image: "🐑",
-        color: "from-cyan-400 to-sky-500"
+        color: "from-cyan-400 to-sky-500",
+        luckKeyword: "귀인의 도움"
     },
     Monkey: {
         animal: "Monkey",
@@ -264,7 +273,8 @@ export const zodiacResults: Record<string, ZodiacResult> = {
         bestMatch: "Rat",
         worstMatch: "Tiger",
         image: "🐵",
-        color: "from-amber-400 to-yellow-500"
+        color: "from-amber-400 to-yellow-500",
+        luckKeyword: "재치와 행운"
     },
     Rooster: {
         animal: "Rooster",
@@ -277,7 +287,8 @@ export const zodiacResults: Record<string, ZodiacResult> = {
         bestMatch: "Ox",
         worstMatch: "Rabbit",
         image: "🐔",
-        color: "from-red-500 to-rose-600"
+        color: "from-red-500 to-rose-600",
+        luckKeyword: "투자 성공"
     },
     Dog: {
         animal: "Dog",
@@ -290,7 +301,8 @@ export const zodiacResults: Record<string, ZodiacResult> = {
         bestMatch: "Tiger",
         worstMatch: "Dragon",
         image: "🐶",
-        color: "from-amber-700 to-orange-800"
+        color: "from-amber-700 to-orange-800",
+        luckKeyword: "무조건 합격"
     },
     Pig: {
         animal: "Pig",
@@ -303,6 +315,7 @@ export const zodiacResults: Record<string, ZodiacResult> = {
         bestMatch: "Rabbit",
         worstMatch: "Snake",
         image: "🐷",
-        color: "from-pink-300 to-rose-400"
+        color: "from-pink-300 to-rose-400",
+        luckKeyword: "금전운 최고"
     }
 };

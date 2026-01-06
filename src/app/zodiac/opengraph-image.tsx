@@ -3,8 +3,8 @@ import { createOgImage } from "@/lib/og-generator";
 export const runtime = "edge";
 
 export default createOgImage({
-    title: "내 안의 숨겨진 띠 찾기",
-    description: "겉모습과 다른 나의 진짜 성격은? 12지신 동물로 알아보는 영혼의 띠 테스트.",
-    icon: "🐉",
+    title: "2026 신년운세 & 숨겨진 띠 찾기",
+    description: "2026년 대박 날 나의 운명은? 영혼의 띠와 행운 키워드를 확인하세요.",
+    icon: "🧧",
     theme: "violet",
 });

@@ -81,8 +81,8 @@ export function ZodiacQuiz() {
         if (navigator.share) {
             try {
                 await navigator.share({
-                    title: `내 안의 숨겨진 띠는? ${resultData.title}`,
-                    text: `겉모습과 다른 내면의 띠 동물을 확인해보세요! #마음콕 #띠별심리 #동물테스트`,
+                    title: `2026년 내 운세는? : ${resultData.title}`,
+                    text: `나는 ${resultData.name}띠! 2026년 행운 키워드는 '${resultData.luckKeyword}' 입니다. 당신의 숨겨진 띠도 확인해보세요! #신년운세 #마음콕 #숨겨진띠찾기`,
                     url: url,
                 });
             } catch (err) {
@@ -100,7 +100,7 @@ export function ZodiacQuiz() {
 
     // Share to Twitter specifically
     const handleTwitterShare = () => {
-        const text = `내 안의 숨겨진 띠는? [${resultData.title}]\n\n당신의 영혼의 띠도 확인해보세요! 👇`;
+        const text = `2026년 내 운세가 대박인 이유? 🧧\n\n나의 숨겨진 띠: [${resultData.name}]\n행운 키워드: [${resultData.luckKeyword}]\n\n당신의 2026년 수호 동물도 확인해보세요! 👇`;
         const url = window.location.href;
         window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(url)}`, '_blank');
     };
@@ -157,14 +157,19 @@ export function ZodiacQuiz() {
                                 <div className="absolute top-0 right-0 -mr-10 -mt-10 h-64 w-64 rounded-full bg-violet-600 opacity-20 blur-3xl" />
                                 <div className="absolute bottom-0 left-0 -ml-10 -mb-10 h-40 w-40 rounded-full bg-indigo-500 opacity-20 blur-3xl" />
 
-                                <div className="relative z-10 text-center py-6">
+                                <div className="absolute top-4 left-1/2 -translate-x-1/2 bg-red-600 text-white text-[10px] md:text-xs font-black px-3 py-1 rounded-full border border-red-400 shadow-[0_0_15px_rgba(220,38,38,0.6)] animate-pulse whitespace-nowrap z-20">
+                                    2026 병오년(丙午年) 기념 리미티드 에디션 🧧
+                                </div>
+
+                                <div className="relative z-10 text-center py-6 mt-4">
                                     <div className="mb-4 text-6xl animate-pulse">🔮</div>
-                                    <h1 className="text-3xl md:text-5xl font-extrabold tracking-tight mb-4">
-                                        내 안의 <span className="text-violet-400">숨겨진 띠</span> 찾기
+                                    <h1 className="text-3xl md:text-5xl font-extrabold tracking-tight mb-4 leading-tight">
+                                        2026 신년운세 &<br />
+                                        <span className="text-violet-400">숨겨진 띠</span> 찾기
                                     </h1>
                                     <p className="text-slate-300 text-lg md:text-xl font-medium leading-relaxed max-w-2xl mx-auto">
-                                        당신의 띠는 태어난 해가 정하지만,<br className="hidden md:block" />
-                                        <span className="text-white font-bold">당신의 영혼의 띠</span>는 성격이 정합니다.
+                                        태어난 띠는 바꿀 수 없지만,<br className="hidden md:block" />
+                                        <span className="text-white font-bold">영혼의 띠</span>가 2026년 운명을 결정합니다.
                                     </p>
                                 </div>
                             </div>
@@ -313,6 +318,13 @@ export function ZodiacQuiz() {
                                     <p className="text-sm md:text-base opacity-75 max-w-sm mx-auto leading-relaxed border-t border-white/20 pt-4">
                                         "{resultData.subtitle}"
                                     </p>
+
+                                    <div className="mt-8 inline-flex flex-col items-center animate-bounce">
+                                        <span className="text-xs font-bold text-amber-200 mb-1 uppercase tracking-widest">2026 LUCK KEYWORD</span>
+                                        <span className="bg-white text-slate-900 px-6 py-2 rounded-full font-black text-xl shadow-lg border-2 border-amber-300">
+                                            🧧 {resultData.luckKeyword}
+                                        </span>
+                                    </div>
                                 </div>
                             </div>
 
@@ -403,12 +415,12 @@ export function ZodiacQuiz() {
                     style={{ width: "1080px", height: "1920px", padding: "80px" }}
                 >
                     <div className="text-center w-full">
-                        <div className="inline-block px-8 py-3 rounded-full bg-slate-100 text-3xl font-black text-slate-500 mb-12 tracking-widest">
-                            HIDDEN ZODIAC TEST
+                        <div className="inline-block px-8 py-3 rounded-full bg-gradient-to-r from-red-600 to-red-500 text-3xl font-black text-white mb-12 tracking-widest shadow-xl border-4 border-amber-400">
+                            2026 LIMITED EDITION
                         </div>
-                        <h2 className="text-7xl font-black text-slate-900 leading-tight mb-8">
-                            내 안의 숨겨진<br />
-                            <span className="text-violet-600">영혼의 띠</span> 동물은?
+                        <h2 className="text-6xl font-black text-slate-900 leading-tight mb-8">
+                            <span className="text-red-600">붉은 말의 해</span>,<br />
+                            나를 지켜줄 수호 동물은?
                         </h2>
                     </div>
 
@@ -419,9 +431,17 @@ export function ZodiacQuiz() {
                         </div>
                     </div>
 
-                    <div className="w-full text-center">
-                        <h1 className="text-9xl font-black text-slate-900 mb-6">{resultData.name}</h1>
-                        <p className="text-4xl text-slate-500 font-bold mb-16 max-w-3xl mx-auto leading-relaxed">
+                    <div className="w-full text-center relative z-10">
+                        <div className="inline-block px-8 py-3 rounded-full bg-[#371D1E] text-amber-400 text-3xl font-black mb-12 tracking-widest border-2 border-amber-500 shadow-xl">
+                            2026 丙午年 수호 부적 🧧
+                        </div>
+                        <h1 className="text-9xl font-black text-slate-900 mb-4 drop-shadow-sm">{resultData.name}</h1>
+                        <div className="mb-12">
+                            <span className="inline-block bg-red-600 text-white text-4xl font-black px-8 py-3 rounded-2xl shadow-lg border-4 border-red-400">
+                                행운: {resultData.luckKeyword}
+                            </span>
+                        </div>
+                        <p className="text-4xl text-slate-500 font-bold mb-12 max-w-3xl mx-auto leading-relaxed">
                             "{resultData.subtitle}"
                         </p>
 
@@ -442,8 +462,8 @@ export function ZodiacQuiz() {
                             </div>
                         </div>
 
-                        <div className="text-3xl font-bold text-slate-300 tracking-[0.5em] uppercase">
-                            mind.zucca100.com
+                        <div className="text-3xl font-bold text-slate-400 tracking-[0.3em] uppercase">
+                            mind.zucca100.com | 2026 운세
                         </div>
                     </div>
                 </div>

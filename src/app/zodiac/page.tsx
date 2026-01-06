@@ -7,13 +7,13 @@ export async function generateMetadata({ searchParams }: { searchParams: Promise
     const params = await searchParams;
     const res = params.res as string | undefined;
 
-    let title = "내 안의 숨겨진 띠 찾기 - 동물 성향 심리테스트";
-    let description = "태어난 해가 아닌, 성격으로 알아보는 나의 진짜 띠! 내 안에 숨어있는 12지신 동물을 찾아보세요.";
+    let title = "2026 신년운세 & 숨겨진 띠 찾기 - 붉은 말의 해 특별판";
+    let description = "태어난 띠보다 중요한 영혼의 띠! 2026년 대박 행운을 가져다줄 나의 수호 동물을 찾아보세요.";
 
     if (res && zodiacResults[res]) {
         const result = zodiacResults[res];
-        title = `나는 ${result.subtitle} '${result.name}' | 숨겨진 띠 찾기`;
-        description = `나의 영혼의 동물은 ${result.name}입니다. ${result.description} 당신도 알아보세요!`;
+        title = `2026년 내 운세는? '${result.name}' 수호 동물 확인 | 신년운세`;
+        description = `나의 2026년 행운 키워드는 '${result.luckKeyword}'입니다. 당신의 수호 동물과 대박 운세를 확인해보세요!`;
     }
 
     return {
