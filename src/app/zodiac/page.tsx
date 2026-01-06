@@ -23,13 +23,6 @@ export async function generateMetadata({ searchParams }: { searchParams: Promise
             title,
             description,
             type: "article",
-            images: [
-                {
-                    url: "/zodiac-og.png", // Fallback or need to generate generic one
-                    width: 1200,
-                    height: 630,
-                }
-            ]
         },
         twitter: {
             card: "summary_large_image",
