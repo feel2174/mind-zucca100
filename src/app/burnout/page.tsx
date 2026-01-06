@@ -55,30 +55,8 @@ export default function BurnoutTestPage() {
     return (
         <div className="min-h-screen px-4 py-12 md:px-6 bg-slate-50">
             <article className="mx-auto flex w-full max-w-4xl flex-col gap-8">
-                <header className="space-y-6">
-                    <nav className="text-sm text-slate-500">
-                        <Link href="/" className="hover:text-slate-900 transition-colors">
-                            홈
-                        </Link>{" "}
-                        <span aria-hidden>›</span>{" "}
-                        <span className="font-semibold text-slate-800">번아웃 자가진단</span>
-                    </nav>
-
-                    <div className="rounded-3xl bg-white p-8 shadow-xl shadow-slate-200/50 border border-slate-100">
-                        <p className="text-sm font-bold uppercase tracking-[0.2em] text-slate-400">
-                            MENTAL CARE GUIDE
-                        </p>
-                        <h1 className="mt-3 text-4xl font-extrabold text-slate-900">
-                            {pageTitle}
-                        </h1>
-                        <p className="mt-4 text-lg text-slate-600">
-                            {pageDescription}
-                        </p>
-                    </div>
-                </header>
-
                 <Suspense fallback={<div className="flex h-64 items-center justify-center font-bold text-slate-400">진단 준비 중...</div>}>
-                    <BurnoutQuiz />
+                    <BurnoutQuiz title={pageTitle} description={pageDescription} />
                 </Suspense>
             </article>
 

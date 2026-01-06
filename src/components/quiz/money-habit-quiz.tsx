@@ -6,6 +6,7 @@ import { useSearchParams, useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { motion, AnimatePresence } from "framer-motion";
 import { AdSenseSlot } from "@/components/ui/adsense-slot";
+import { RecommendedTests } from "@/components/quiz/recommended-tests";
 
 type MoneyType = "safe" | "planner" | "yolo" | "adventure";
 
@@ -162,7 +163,14 @@ const initialScore: Record<MoneyType, number> = {
   adventure: 0,
 };
 
-export function MoneyHabitQuiz() {
+import { Share2, RotateCcw, Copy } from "lucide-react";
+
+interface MoneyHabitQuizProps {
+  title?: string;
+  description?: string;
+}
+
+export function MoneyHabitQuiz({ title, description }: MoneyHabitQuizProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [step, setStep] = useState<"intro" | "quiz" | "ad" | "result">("intro");
@@ -263,32 +271,69 @@ export function MoneyHabitQuiz() {
     <div className="flex flex-col gap-8">
       <AnimatePresence mode="wait">
         {step === "intro" && (
-          <motion.section
+          <motion.div
             key="intro"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -20 }}
-            className="rounded-[2.5rem] bg-white p-8 md:p-12 shadow-xl shadow-indigo-50 border border-slate-100"
+            className="flex flex-col gap-8"
           >
-            <div className="space-y-8 text-center">
-              <div className="inline-flex h-20 w-20 items-center justify-center rounded-3xl bg-emerald-50 text-5xl shadow-inner shadow-emerald-100">
+            {/* Page Header - only shows in intro */}
+            <header className="space-y-6 text-left">
+              <nav className="text-sm text-slate-500">
+                <Link href="/" className="hover:text-emerald-600 transition-colors">
+                  홈
+                </Link>{" "}
+                <span aria-hidden>›</span>{" "}
+                <span className="font-semibold text-slate-800">돈관리 성향 테스트</span>
+              </nav>
+
+              <div className="relative overflow-hidden rounded-3xl bg-white p-6 md:p-8 shadow-xl shadow-emerald-50 border border-emerald-100">
+                <div className="absolute top-0 right-0 -mr-10 -mt-10 h-40 w-40 rounded-full bg-emerald-50 opacity-50 blur-3xl" />
+                <div className="relative z-10">
+                  <p className="text-sm font-bold uppercase tracking-[0.2em] text-emerald-500">
+                    MONEY ROUTINE CHECK
+                  </p>
+                  <h1 className="mt-3 text-3xl md:text-4xl font-extrabold text-slate-900 tracking-tight">
+                    {title || "돈관리 성향 테스트"}
+                  </h1>
+                  <p className="mt-4 text-base md:text-lg text-slate-600 leading-relaxed">
+                    {description || "나의 소비 습관과 투자 성향을 분석해 보세요."}
+                  </p>
+                  <dl className="mt-6 flex flex-wrap gap-4 text-xs md:text-sm font-medium">
+                    <div className="flex items-center gap-2 rounded-full bg-emerald-50 px-4 py-1.5 text-emerald-700">
+                      ⏱️ <span>약 4분 소요</span>
+                    </div>
+                    <div className="flex items-center gap-2 rounded-full bg-indigo-50 px-4 py-1.5 text-indigo-700">
+                      🧮 <span>점수 기반 분석</span>
+                    </div>
+                    <div className="flex items-center gap-2 rounded-full bg-slate-100 px-4 py-1.5 text-slate-700">
+                      🧾 <span>행동 가이드 제공</span>
+                    </div>
+                  </dl>
+                </div>
+              </div>
+            </header>
+
+            <div className="rounded-[2.5rem] bg-white p-8 md:p-12 text-center shadow-2xl border border-emerald-50">
+              <div className="mb-8 text-7xl animate-bounce-slow">
                 💰
               </div>
-              <h2 className="text-3xl font-black text-slate-900 leading-tight">
+              <h2 className="mb-4 text-3xl font-black text-slate-900 tracking-tight leading-tight">
                 나의 돈관리 루틴,<br />어떤 성향일까요?
               </h2>
-              <p className="text-slate-500 leading-relaxed font-bold">
-                소비 습관·투자 방식 10문항으로 분석합니다.<br />
+              <p className="text-slate-600 font-medium leading-relaxed mb-8">
+                소비 습관부터 투자 방식까지 10문항으로 분석합니다.<br />
                 나만의 정밀 재테크 리포트를 확인해보세요!
               </p>
               <div className="space-y-6">
-                <Button size="xl" className="w-full font-black bg-emerald-600 shadow-lg shadow-emerald-100" onClick={startQuiz}>
+                <Button size="xl" className="w-full bg-gradient-to-r from-emerald-500 to-teal-600 font-bold shadow-emerald-200 text-white" onClick={startQuiz}>
                   🚀 테스트 시작하기
                 </Button>
                 <AdSenseSlot slot="1777541474" className="min-h-[100px]" />
               </div>
             </div>
-          </motion.section>
+          </motion.div>
         )}
 
         {step === "quiz" && activeQuestion && (
@@ -362,40 +407,45 @@ export function MoneyHabitQuiz() {
         )}
 
         {step === "result" && (
-          <motion.section
+          <motion.div
             key="result"
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
             className="space-y-6"
           >
             <div className="overflow-hidden rounded-[3rem] bg-white shadow-2xl border-8 border-white">
-              <div className="bg-gradient-to-br from-emerald-500 via-emerald-600 to-indigo-600 p-12 text-center text-white relative">
+              <div className="bg-gradient-to-br from-emerald-500 to-teal-600 p-10 md:p-12 text-center text-white relative">
                 <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -mr-16 -mt-16 blur-3xl" />
                 <div className="mb-6 text-8xl drop-shadow-2xl">{resultData.icon}</div>
-                <h3 className="text-4xl font-black tracking-tight">{resultData.title}</h3>
-                <p className="mt-2 text-emerald-100 font-bold text-xl">{resultData.subtitle}</p>
-                <div className="mt-8 flex flex-wrap justify-center gap-3">
+                <div className="inline-block rounded-full bg-white/20 px-6 py-1.5 text-sm font-black backdrop-blur-md mb-4">
+                  MONEY TYPE
+                </div>
+                <h3 className="text-4xl font-black tracking-tight leading-tight">{resultData.title}</h3>
+                <p className="mt-2 text-emerald-100 font-bold text-lg">{resultData.subtitle}</p>
+
+                <div className="mt-8 flex flex-wrap justify-center gap-2">
                   {resultData.keywords.map((keyword) => (
                     <span
                       key={keyword}
-                      className="rounded-full bg-white/25 px-5 py-1.5 text-sm font-black backdrop-blur-lg border border-white/20"
+                      className="rounded-full bg-white/20 px-4 py-1.5 text-xs font-bold backdrop-blur-sm border border-white/10 shadow-sm"
                     >
                       #{keyword}
                     </span>
                   ))}
                 </div>
               </div>
+
               <div className="p-8 md:p-12">
-                <div className="rounded-[2.5rem] bg-slate-50/50 p-8 md:p-10 border border-slate-100">
-                  <h4 className="flex items-center gap-3 text-xs font-black uppercase tracking-[0.3em] text-slate-400 mb-8">
+                <div className="rounded-[2.5rem] bg-slate-50 p-8 border border-slate-100">
+                  <h4 className="flex items-center gap-3 text-xs font-black uppercase tracking-[0.3em] text-emerald-600 mb-6">
                     <span className="h-4 w-1.5 bg-emerald-500 rounded-full" />
-                    Custom Action Strategy
+                    Action Plan
                   </h4>
-                  <ul className="space-y-5">
-                    {resultData.action.map((tip) => (
-                      <li key={tip} className="flex items-start gap-5 text-lg font-bold text-slate-700 bg-white p-6 rounded-3xl shadow-[0_4px_20px_-4px_rgba(0,0,0,0.05)] border border-slate-50 transition-transform hover:scale-[1.02]">
-                        <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-emerald-50 text-emerald-600 shadow-inner">
-                          ✓
+                  <ul className="space-y-4">
+                    {resultData.action.map((tip, idx) => (
+                      <li key={idx} className="flex items-start gap-4 text-lg font-bold text-slate-700 bg-white p-5 rounded-2xl shadow-sm border border-slate-100">
+                        <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-emerald-100 text-emerald-600 text-sm mt-1">
+                          {idx + 1}
                         </span>
                         <span className="leading-relaxed">{tip}</span>
                       </li>
@@ -403,29 +453,43 @@ export function MoneyHabitQuiz() {
                   </ul>
                 </div>
 
-                <AdSenseSlot slot="4108191347" className="my-10 min-h-[100px]" />
-
-                <div className="mt-12 flex flex-col gap-4">
-                  <Button size="xl" className="w-full bg-emerald-600 hover:bg-emerald-700 font-black shadow-lg shadow-emerald-100" onClick={handleShare}>
-                    🔗 결과 공유하기
-                  </Button>
-                  <Button asChild size="xl" className="w-full rounded-2xl bg-slate-900 font-black">
-                    <Link href={infoLink} rel="noreferrer">
-                      📚 금융 꿀팁 더 알아보기
+                <div className="mt-8 p-6 bg-indigo-50 rounded-3xl border border-indigo-100 text-center">
+                  <p className="text-indigo-900 font-bold mb-4">금융 상식, 더 자세히 알고 싶다면?</p>
+                  <Button asChild size="lg" className="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl shadow-lg shadow-indigo-200">
+                    <Link href={infoLink} target="_blank" rel="noopener noreferrer">
+                      📚 금융 꿀팁 아티클 보러가기
                     </Link>
                   </Button>
-                  <Button
-                    variant="ghost"
-                    onClick={restartQuiz}
-                    className="w-full h-15 font-bold text-slate-400 hover:text-emerald-600"
-                  >
-                    🔄 다시 테스트하기
+                </div>
+
+                <AdSenseSlot slot="4108191347" className="my-10 min-h-[100px]" />
+
+                <div className="mt-10 flex flex-col gap-4">
+                  <Button size="xl" className="relative w-full bg-emerald-600 hover:bg-emerald-700 font-bold shadow-lg shadow-emerald-100 overflow-hidden text-white" onClick={handleShare}>
+                    <div className="absolute left-6 top-1/2 -translate-y-1/2">
+                      <Share2 className="w-5 h-5 text-white" />
+                    </div>
+                    <span className="w-full text-center whitespace-nowrap text-[15px] md:text-lg">결과 공유하기</span>
+                  </Button>
+
+                  <Button size="xl" variant="outline" className="relative w-full border-2 border-slate-200 text-slate-600 hover:bg-slate-50 font-bold overflow-hidden" onClick={restartQuiz}>
+                    <div className="absolute left-6 top-1/2 -translate-y-1/2">
+                      <RotateCcw className="w-5 h-5 text-slate-600" />
+                    </div>
+                    <span className="w-full text-center whitespace-nowrap text-[15px] md:text-lg">다시 테스트하기</span>
+                  </Button>
+
+                  <Button variant="ghost" className="text-slate-400 font-bold" asChild>
+                    <Link href="/">다른 테스트 보러가기</Link>
                   </Button>
                 </div>
               </div>
             </div>
+            <div className="mt-8">
+              <RecommendedTests currentSlug="/money" />
+            </div>
             <AdSenseSlot slot="8526798560" format="fluid" className="mt-8" />
-          </motion.section>
+          </motion.div>
         )}
       </AnimatePresence>
     </div>

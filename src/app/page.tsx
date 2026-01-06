@@ -4,69 +4,8 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { AdSenseSlot } from "@/components/ui/adsense-slot";
 import { motion } from "framer-motion";
-
-const tests = [
-  {
-    title: "MBTI 연애 성향 테스트",
-    description: "12개의 질문으로 나의 연애 스타일과 환상의 파트너를 분석해 보세요.",
-    slug: "/dating",
-    duration: "약 3분 소요",
-    badge: "HOT",
-    tags: ["연애", "MBTI", "심리"],
-    icon: "💘",
-    color: "from-pink-500 to-rose-600",
-  },
-  {
-    title: "직장인 번아웃 자가진단",
-    description: "최근 부쩍 기운이 없나요? 15가지 질문으로 나의 마음 건강을 체크하세요.",
-    slug: "/burnout",
-    duration: "약 3분 소요",
-    badge: "NEW",
-    tags: ["직장인", "건강", "심리"],
-    icon: "🤯",
-    color: "from-orange-500 to-amber-600",
-  },
-  {
-    title: "나의 돈관리 성향 테스트",
-    description: "월급 루틴과 소비 습관으로 초안정형부터 욜로형까지 성향을 분석해요.",
-    slug: "/money",
-    duration: "약 4분 소요",
-    badge: "NEW",
-    tags: ["재테크", "소비 성향", "생활"],
-    icon: "💰",
-    color: "from-emerald-500 to-teal-600",
-  },
-  {
-    title: "공무원 직렬 추천 테스트",
-    description: "10개의 질문으로 나에게 맞는 행정·기술·세무 등 직렬을 추천해요.",
-    slug: "/gongmuwon",
-    duration: "약 3분 소요",
-    badge: "NEW",
-    tags: ["진로", "공무원", "적성"],
-    icon: "🎯",
-    color: "from-indigo-500 to-blue-600",
-  },
-  {
-    title: "내게 맞는 직무 유형 찾기",
-    description: "성향·에너지·대인관계로 사무/기획·영업·개발·콘텐츠 중 적합한 직무를 추천해요.",
-    slug: "/job",
-    duration: "약 3분 소요",
-    badge: "TREND",
-    tags: ["취업", "직무", "커리어"],
-    icon: "💼",
-    color: "from-blue-500 to-cyan-600",
-  },
-  {
-    title: "회사에서 나는 어떤 캐릭터일까?",
-    description: "회의·메신저·보고서 상황으로 정리왕 PM부터 인싸 분위기메이커까지 분석해요.",
-    slug: "/workplace",
-    duration: "약 3분 소요",
-    badge: "FUN",
-    tags: ["직장인", "협업", "성향"],
-    icon: "🏢",
-    color: "from-violet-500 to-purple-600",
-  },
-];
+import { tests } from "@/lib/tests-data";
+import { Toast, useToast } from "@/components/ui/toast";
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -91,8 +30,24 @@ const itemVariants = {
 };
 
 export default function Home() {
+  const { toast, showToast, hideToast } = useToast();
+
+  const handleBookmark = () => {
+    // Basic OS detection
+    const isMac = typeof window !== 'undefined' && navigator.userAgent.toUpperCase().indexOf('MAC') >= 0;
+    const shortcut = isMac ? "Cmd + D" : "Ctrl + D";
+    showToast(`키보드의 [${shortcut}] 키를 눌러 즐겨찾기에 추가해주세요! 🔖`, "success");
+  };
+
   return (
     <div className="relative min-h-screen bg-[#F8FAFC] font-noto-sans overflow-x-hidden">
+      {toast && (
+        <Toast
+          message={toast.message}
+          type={toast.type}
+          onClose={hideToast}
+        />
+      )}
       {/* Background Decorative Elements */}
       <div className="fixed inset-0 pointer-events-none overflow-hidden">
         <div className="absolute top-[-10%] right-[-10%] w-[40%] h-[40%] bg-blue-100/50 rounded-full blur-[120px]" />
@@ -141,7 +96,7 @@ export default function Home() {
                   className="text-lg md:text-xl text-slate-500 font-medium md:max-w-2xl leading-[1.6] tracking-tight"
                 >
                   MBTI 연애 성향부터 직장인 번아웃 자가진단까지.<br className="hidden md:block" />
-                  일상에 작은 통찰을 더하는 6가지 맞춤 솔루션을 지금 확인해보세요.
+                  연애부터 직무까지, 데이터로 분석하는 나만의 성향 리포트
                 </motion.p>
               </div>
 
@@ -152,7 +107,7 @@ export default function Home() {
                 className="flex flex-col md:flex-row items-center justify-center md:justify-start gap-8"
               >
                 <Button size="xl" asChild className="w-full md:w-auto px-10 h-16 rounded-2xl bg-indigo-600 hover:bg-indigo-700 shadow-2xl shadow-indigo-200 transition-all hover:scale-105 active:scale-95 font-black text-xl tracking-tight whitespace-nowrap">
-                  <Link href="/dating" className="block w-full">💘 전체 테스트 시작하기</Link>
+                  <Link href="#test-list" className="block w-full">💘 모든 테스트 둘러보기</Link>
                 </Button>
 
                 <div className="flex items-center gap-4 shrink-0">
@@ -198,13 +153,13 @@ export default function Home() {
         <AdSenseSlot slot="1777541474" className="mb-12 w-full min-h-[100px]" />
 
         {/* Content Section */}
-        <section>
+        <section id="test-list">
           <div className="mb-12 flex flex-col items-center md:items-start space-y-4">
             <h2 className="text-3xl font-black text-slate-900 tracking-tight flex items-center gap-3">
               맞춤 심리 & 직무 테스트
               <span className="text-lg font-bold text-indigo-600 bg-indigo-50 px-3 py-1 rounded-full">{tests.length}</span>
             </h2>
-            <p className="text-slate-500 font-bold">당신에게 필요한 통찰을 3분 만에 확인하세요</p>
+            <p className="text-slate-500 font-bold">3분 만에 발견하는 새로운 나</p>
           </div>
 
           <motion.div
@@ -265,6 +220,31 @@ export default function Home() {
                 </div>
               </motion.article>
             ))}
+
+            <motion.article
+              variants={itemVariants}
+              className="group relative flex flex-col items-center justify-center overflow-hidden rounded-[2.5rem] bg-slate-50/80 p-8 border-2 border-dashed border-slate-200 text-center min-h-[320px] transition-all duration-300 hover:bg-slate-100 hover:border-slate-300"
+            >
+              <div className="mb-6 flex h-20 w-20 items-center justify-center rounded-[2rem] bg-white text-4xl shadow-sm group-hover:scale-110 group-hover:rotate-12 transition-all duration-300 cursor-default">
+                🚧
+              </div>
+              <h3 className="text-xl font-black text-slate-400 mb-3 leading-tight tracking-tight group-hover:text-slate-600 transition-colors">
+                더 많은 심리테스트가<br />
+                준비중이에요
+              </h3>
+              <p className="text-sm font-bold text-slate-400/80 leading-relaxed group-hover:text-slate-500 transition-colors mb-6">
+                새로운 테스트가 곧 업데이트될 예정입니다.<br />
+                다음에 또 방문해주세요! ✨
+              </p>
+              <Button
+                variant="outline"
+                size="sm"
+                className="rounded-xl border-slate-300 text-slate-500 hover:text-indigo-600 hover:border-indigo-200 hover:bg-white font-bold transition-all shadow-sm"
+                onClick={handleBookmark}
+              >
+                🔖 즐겨찾기 추가하기
+              </Button>
+            </motion.article>
           </motion.div>
         </section>
 

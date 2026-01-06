@@ -5,6 +5,8 @@ import Link from "next/link";
 import { useSearchParams, useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { motion, AnimatePresence } from "framer-motion";
+import { Share2, RotateCcw } from "lucide-react";
+import { RecommendedTests } from "@/components/quiz/recommended-tests";
 import { AdSenseSlot } from "@/components/ui/adsense-slot";
 
 type JobType = "office" | "sales" | "tech" | "content";
@@ -120,7 +122,12 @@ const initialScores: Record<JobType, number> = {
   content: 0,
 };
 
-export function JobTypeQuiz() {
+interface JobTypeQuizProps {
+  title?: string;
+  description?: string;
+}
+
+export function JobTypeQuiz({ title, description }: JobTypeQuizProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [step, setStep] = useState<"intro" | "quiz" | "ad" | "result">("intro");
@@ -214,28 +221,64 @@ export function JobTypeQuiz() {
     <div className="flex flex-col gap-8">
       <AnimatePresence mode="wait">
         {step === "intro" && (
-          <motion.section
+          <motion.div
             key="intro"
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0, scale: 0.9 }}
-            className="rounded-[2.5rem] bg-white p-8 md:p-12 text-center shadow-2xl border border-indigo-50"
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -10 }}
+            className="flex flex-col gap-8"
           >
-            <div className="mb-8 mx-auto h-20 w-20 flex items-center justify-center rounded-3xl bg-indigo-50 text-4xl shadow-inner shadow-indigo-100">
-              🎯
+            <header className="space-y-6">
+              <nav className="text-sm text-slate-500">
+                <Link href="/" className="hover:text-indigo-600 transition-colors">
+                  홈
+                </Link>{" "}
+                <span aria-hidden>›</span>{" "}
+                <span className="font-semibold text-slate-800">직무 적성 테스트</span>
+              </nav>
+              <div className="relative overflow-hidden rounded-3xl bg-white p-6 md:p-8 shadow-xl shadow-indigo-50 border border-indigo-100">
+                <div className="absolute top-0 right-0 -mr-10 -mt-10 h-40 w-40 rounded-full bg-indigo-50 opacity-50 blur-3xl" />
+                <div className="relative z-10">
+                  <p className="text-sm font-bold uppercase tracking-[0.2em] text-indigo-500">
+                    CAREER MATCH
+                  </p>
+                  <h1 className="mt-3 text-3xl md:text-4xl font-extrabold text-slate-900 tracking-tight">
+                    {title || "내게 맞는 직무 유형 찾기"}
+                  </h1>
+                  <p className="mt-4 text-base md:text-lg text-slate-600 leading-relaxed">
+                    {description || "성향과 에너지를 분석하여 최적의 직무를 추천해 드립니다."}
+                  </p>
+                  <dl className="mt-6 flex flex-wrap gap-4 text-xs md:text-sm font-medium">
+                    <div className="flex items-center gap-2 rounded-full bg-indigo-50 px-4 py-1.5 text-indigo-700">
+                      ⏱️ <span>평균 3분 소요</span>
+                    </div>
+                    <div className="flex items-center gap-2 rounded-full bg-slate-100 px-4 py-1.5 text-slate-700">
+                      🧮 <span>점수 기반 분석</span>
+                    </div>
+                  </dl>
+                </div>
+              </div>
+            </header>
+
+            <div className="rounded-[2.5rem] bg-white p-8 md:p-12 text-center shadow-xl border border-slate-100">
+              <div className="mx-auto mb-8 flex h-20 w-20 items-center justify-center rounded-3xl bg-indigo-50 text-4xl shadow-sm animate-bounce-slow">
+                🎯
+              </div>
+              <h2 className="mb-4 text-3xl font-black text-slate-900 tracking-tight leading-tight">
+                내게 맞는<br />직무 유형 찾기
+              </h2>
+              <p className="mb-8 text-slate-500 font-medium leading-relaxed">
+                성향과 에너지, 소통 방식을 분석하여<br />
+                가장 빛날 수 있는 직무를 찾아드립니다.
+              </p>
+              <div className="space-y-6">
+                <Button size="xl" className="w-full font-black bg-indigo-600 hover:bg-indigo-700 shadow-lg shadow-indigo-200" onClick={() => setStep("quiz")}>
+                  🚀 나에게 맞는 직무 찾기
+                </Button>
+                <AdSenseSlot slot="1777541474" className="min-h-[100px]" />
+              </div>
             </div>
-            <h2 className="text-3xl font-black text-slate-900 leading-tight">내게 맞는<br />직무 유형 찾기</h2>
-            <p className="mt-4 text-slate-500 font-bold leading-relaxed">
-              성향과 에너지, 소통 방식을 분석하여<br />
-              가장 빛날 수 있는 직무를 찾아드립니다.
-            </p>
-            <div className="space-y-6">
-              <Button size="xl" className="w-full font-black bg-indigo-600" onClick={() => setStep("quiz")}>
-                🚀 나에게 맞는 직무 찾기
-              </Button>
-              <AdSenseSlot slot="1777541474" className="min-h-[100px]" />
-            </div>
-          </motion.section>
+          </motion.div>
         )}
 
         {step === "quiz" && current && (
@@ -306,38 +349,46 @@ export function JobTypeQuiz() {
         )}
 
         {step === "result" && (
-          <motion.section
+          <motion.div
             key="result"
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
             className="space-y-6"
           >
             <div className="overflow-hidden rounded-[3rem] bg-white shadow-2xl border-8 border-white">
-              <div className="bg-gradient-to-br from-indigo-600 via-indigo-700 to-purple-700 p-12 text-center text-white relative">
+              <div className="bg-gradient-to-br from-indigo-600 via-indigo-700 to-purple-700 p-10 md:p-12 text-center text-white relative">
                 <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -mr-16 -mt-16 blur-3xl" />
                 <div className="mb-6 text-8xl drop-shadow-2xl">{resultData.icon}</div>
-                <h3 className="text-4xl font-black leading-tight tracking-tight">{resultData.title}</h3>
-                <p className="mt-2 text-indigo-100 font-bold text-xl">{resultData.subtitle}</p>
+                <div className="inline-block rounded-full bg-white/20 px-6 py-1.5 text-sm font-black backdrop-blur-md mb-4">
+                  Match Result
+                </div>
+                <h3 className="text-3xl md:text-4xl font-black tracking-tight leading-tight">{resultData.title}</h3>
+                <p className="mt-3 text-indigo-100 font-bold text-lg md:text-xl">{resultData.subtitle}</p>
               </div>
+
               <div className="p-8 md:p-12">
-                <div className="grid gap-8 md:grid-cols-2">
-                  <div className="rounded-[2rem] bg-indigo-50/50 p-8 border border-indigo-100">
-                    <h4 className="text-xs font-black text-indigo-400 uppercase tracking-widest mb-6">핵심 성과 역량</h4>
+                <div className="grid gap-6 md:grid-cols-2">
+                  <div className="rounded-[2rem] bg-indigo-50/50 p-6 md:p-8 border border-indigo-100">
+                    <h4 className="flex items-center gap-2 text-xs font-black text-indigo-500 uppercase tracking-widest mb-6">
+                      <span className="h-2 w-2 rounded-full bg-indigo-500" /> 핵심 성과 역량
+                    </h4>
                     <ul className="space-y-4">
                       {resultData.characteristics.map((item) => (
-                        <li key={item} className="flex items-center gap-4 font-bold text-slate-700 text-lg">
-                          <span className="h-2.5 w-2.5 rounded-full bg-indigo-400 shadow-sm" />
+                        <li key={item} className="flex items-center gap-4 font-bold text-slate-700 text-base md:text-lg">
+                          <span className="h-2 w-2 rounded-full bg-indigo-400 shadow-sm shrink-0" />
                           {item}
                         </li>
                       ))}
                     </ul>
                   </div>
-                  <div className="rounded-[2rem] bg-purple-50/50 p-8 border border-purple-100">
-                    <h4 className="text-xs font-black text-purple-400 uppercase tracking-widest mb-6">Career Tips</h4>
+                  <div className="rounded-[2rem] bg-purple-50/50 p-6 md:p-8 border border-purple-100">
+                    <h4 className="flex items-center gap-2 text-xs font-black text-purple-500 uppercase tracking-widest mb-6">
+                      <span className="h-2 w-2 rounded-full bg-purple-500" /> Career Tips
+                    </h4>
                     <ul className="space-y-4">
                       {resultData.tips.map((tip) => (
-                        <li key={tip} className="flex items-center gap-4 font-bold text-slate-700 text-lg">
-                          <span className="h-2.5 w-2.5 rounded-full bg-purple-400 shadow-sm" />
+                        <li key={tip} className="flex items-center gap-4 font-bold text-slate-700 text-base md:text-lg">
+                          <span className="h-2 w-2 rounded-full bg-purple-400 shadow-sm shrink-0" />
                           {tip}
                         </li>
                       ))}
@@ -347,27 +398,44 @@ export function JobTypeQuiz() {
 
                 <AdSenseSlot slot="4108191347" className="my-10 min-h-[100px]" />
 
-                <div className="mt-12 flex flex-col gap-4">
-                  <Button size="xl" className="w-full bg-indigo-600 hover:bg-indigo-700 font-black shadow-lg shadow-indigo-100" onClick={handleShare}>
-                    🔗 결과 공유하기
+                <div className="mt-10 flex flex-col gap-4">
+                  <Button size="xl" className="relative w-full bg-indigo-600 hover:bg-indigo-700 font-black shadow-lg shadow-indigo-100 overflow-hidden text-white" onClick={handleShare}>
+                    <div className="absolute left-6 top-1/2 -translate-y-1/2">
+                      <Share2 className="w-5 h-5 text-white" />
+                    </div>
+                    <span className="w-full text-center whitespace-nowrap text-[15px] md:text-lg">결과 공유하기</span>
                   </Button>
-                  <Button asChild size="xl" className="w-full rounded-2xl bg-slate-900 font-black">
-                    <Link href={infoLink} rel="noreferrer">
+
+                  <Button asChild size="xl" className="w-full rounded-xl bg-slate-900 hover:bg-black font-black text-white shadow-lg shadow-slate-200">
+                    <Link href={infoLink} target="_blank" rel="noopener noreferrer">
                       💼 채용 시장 트렌드 보러가기
                     </Link>
                   </Button>
+
                   <Button
-                    variant="ghost"
+                    size="xl"
+                    variant="outline"
                     onClick={handleRestart}
-                    className="w-full h-15 font-bold text-slate-400 hover:text-indigo-600"
+                    className="relative w-full border-2 border-slate-200 text-slate-600 hover:bg-slate-50 font-bold overflow-hidden"
                   >
-                    🔄 다시 테스트하기
+                    <div className="absolute left-6 top-1/2 -translate-y-1/2">
+                      <RotateCcw className="w-5 h-5 text-slate-600" />
+                    </div>
+                    <span className="w-full text-center whitespace-nowrap text-[15px] md:text-lg">다시 테스트하기</span>
+                  </Button>
+
+                  <Button variant="ghost" className="text-slate-400 font-bold" asChild>
+                    <Link href="/">다른 테스트 보러가기</Link>
                   </Button>
                 </div>
               </div>
             </div>
+
+            <div className="mt-8">
+              <RecommendedTests currentSlug="/job" />
+            </div>
             <AdSenseSlot slot="8526798560" format="fluid" className="mt-8" />
-          </motion.section>
+          </motion.div>
         )}
       </AnimatePresence>
     </div>

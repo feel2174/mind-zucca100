@@ -6,8 +6,10 @@ import { useSearchParams, useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { motion, AnimatePresence } from "framer-motion";
 import { AdSenseSlot } from "@/components/ui/adsense-slot";
+import { RecommendedTests } from "@/components/quiz/recommended-tests";
 import { toPng } from "html-to-image";
-import { Share2, Download, Heart, Zap, RotateCcw } from "lucide-react";
+import { Share2, Download, Heart, Zap, RotateCcw, Twitter } from "lucide-react";
+import { QuizActionButtons } from "@/components/quiz/quiz-action-buttons";
 
 type MBTIDimension = "EI" | "SN" | "TF" | "JP";
 
@@ -409,6 +411,12 @@ export function DatingStyleQuiz({ title, description }: DatingStyleQuizProps) {
         }
     };
 
+    const handleTwitterShare = () => {
+        const text = `나의 연애 성향: ${resultData.title}\n당신의 연애 DNA를 확인해보세요! #마음콕 #MBTI연애`;
+        const url = window.location.href;
+        window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(url)}`, '_blank');
+    };
+
     const handleDownloadStoryCard = useCallback(async () => {
         if (!storyCardRef.current) return;
 
@@ -690,23 +698,19 @@ export function DatingStyleQuiz({ title, description }: DatingStyleQuizProps) {
 
                                 <AdSenseSlot slot="4108191347" className="my-10 min-h-[100px]" />
 
-                                <div className="mt-10 flex flex-col gap-4">
-                                    <Button size="xl" className="relative w-full bg-pink-600 hover:bg-pink-700 font-bold shadow-lg shadow-pink-100 overflow-hidden" onClick={handleShare}>
-                                        <div className="absolute left-6 top-1/2 -translate-y-1/2">
-                                            <Share2 className="w-5 h-5 text-white" />
-                                        </div>
-                                        <span className="w-full text-center whitespace-nowrap text-[15px] md:text-lg text-white">결과 공유하기</span>
-                                    </Button>
-
-                                    <Button size="xl" variant="outline" className="relative w-full border-2 border-pink-200 text-pink-600 hover:bg-pink-50 font-bold shadow-sm overflow-hidden" onClick={handleDownloadStoryCard} disabled={isGenerating}>
-                                        <div className="absolute left-6 top-1/2 -translate-y-1/2">
-                                            <Download className="w-5 h-5 text-pink-600" />
-                                        </div>
-                                        <span className="w-full text-center whitespace-nowrap text-[15px] md:text-lg">
-                                            {isGenerating ? "이미지 생성 중..." : "인스타 스토리 카드 저장"}
-                                        </span>
-                                    </Button>
-
+                                <QuizActionButtons
+                                    theme="pink"
+                                    onShare={handleShare}
+                                    onShareTwitter={handleTwitterShare}
+                                    onSaveImage={handleDownloadStoryCard}
+                                    isSavingImage={isGenerating}
+                                    onRetry={() => {
+                                        router.replace("/dating", { scroll: false });
+                                        setStep("intro");
+                                        setCurrentIdx(0);
+                                        setScores({ EI: 0, SN: 0, TF: 0, JP: 0 });
+                                    }}
+                                >
                                     <Button size="xl" className="relative w-full bg-indigo-500 hover:bg-indigo-600 text-white font-bold shadow-lg shadow-indigo-100 overflow-hidden !text-white" onClick={handlePartnerShare}>
                                         <div className="absolute left-6 top-1/2 -translate-y-1/2">
                                             <Heart className="w-5 h-5 fill-current text-white" />
@@ -715,24 +719,11 @@ export function DatingStyleQuiz({ title, description }: DatingStyleQuizProps) {
                                             {partnerMbti ? "다른 친구와 궁합보기" : "친구와 궁합 매칭하기"}
                                         </span>
                                     </Button>
-
-                                    <Button size="xl" variant="outline" className="relative w-full border-2 border-slate-200 text-slate-600 hover:bg-slate-50 font-bold overflow-hidden" onClick={() => {
-                                        router.replace("/dating", { scroll: false });
-                                        setStep("intro");
-                                        setCurrentIdx(0);
-                                        setScores({ EI: 0, SN: 0, TF: 0, JP: 0 });
-                                    }}>
-                                        <div className="absolute left-6 top-1/2 -translate-y-1/2">
-                                            <RotateCcw className="w-5 h-5 text-slate-600" />
-                                        </div>
-                                        <span className="w-full text-center whitespace-nowrap text-[15px] md:text-lg">다시 테스트하기</span>
-                                    </Button>
-
-                                    <Button variant="ghost" className="text-slate-400 font-bold" asChild>
-                                        <Link href="/">다른 테스트 보러가기</Link>
-                                    </Button>
-                                </div>
+                                </QuizActionButtons>
                             </div>
+                        </div>
+                        <div className="mt-8">
+                            <RecommendedTests currentSlug="/dating" />
                         </div>
                         <AdSenseSlot slot="8526798560" format="fluid" className="mt-8" />
                     </motion.div>

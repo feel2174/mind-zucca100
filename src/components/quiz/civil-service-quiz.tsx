@@ -5,6 +5,8 @@ import Link from "next/link";
 import { useSearchParams, useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { motion, AnimatePresence } from "framer-motion";
+import { Share2, RotateCcw } from "lucide-react";
+import { RecommendedTests } from "@/components/quiz/recommended-tests";
 import { AdSenseSlot } from "@/components/ui/adsense-slot";
 
 type ResultKey = "admin" | "tech" | "education" | "security" | "tax";
@@ -168,7 +170,12 @@ const initialScores: Record<ResultKey, number> = {
   tax: 0,
 };
 
-export function CivilServiceQuiz() {
+interface CivilServiceQuizProps {
+  title?: string;
+  description?: string;
+}
+
+export function CivilServiceQuiz({ title, description }: CivilServiceQuizProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [step, setStep] = useState<"intro" | "quiz" | "ad" | "result">("intro");
@@ -263,32 +270,64 @@ export function CivilServiceQuiz() {
     <div className="flex flex-col gap-8">
       <AnimatePresence mode="wait">
         {step === "intro" && (
-          <motion.section
+          <motion.div
             key="intro"
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -10 }}
-            className="rounded-[2.5rem] bg-white p-8 md:p-12 shadow-xl border border-slate-100"
+            className="flex flex-col gap-8"
           >
-            <div className="space-y-6 text-center">
-              <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-3xl bg-indigo-50 text-4xl shadow-sm">
+            <header className="space-y-6">
+              <nav className="text-sm text-slate-500">
+                <Link href="/" className="hover:text-indigo-600 transition-colors">
+                  홈
+                </Link>{" "}
+                <span aria-hidden>›</span>{" "}
+                <span className="font-semibold text-slate-800">공무원 직렬 테스트</span>
+              </nav>
+              <div className="relative overflow-hidden rounded-3xl bg-white p-6 md:p-8 shadow-xl shadow-indigo-50 border border-indigo-100">
+                <div className="absolute top-0 right-0 -mr-10 -mt-10 h-40 w-40 rounded-full bg-indigo-50 opacity-50 blur-3xl" />
+                <div className="relative z-10">
+                  <p className="text-sm font-bold uppercase tracking-[0.2em] text-indigo-500">
+                    CAREER INSIGHT
+                  </p>
+                  <h1 className="mt-3 text-3xl md:text-4xl font-extrabold text-slate-900 tracking-tight">
+                    {title || "공무원 직렬 추천 테스트"}
+                  </h1>
+                  <p className="mt-4 text-base md:text-lg text-slate-600 leading-relaxed">
+                    {description || "나에게 가장 잘 맞는 공무원 직렬을 추천해 드립니다."}
+                  </p>
+                  <dl className="mt-6 flex flex-wrap gap-4 text-xs md:text-sm font-medium">
+                    <div className="flex items-center gap-2 rounded-full bg-indigo-50 px-4 py-1.5 text-indigo-700">
+                      ⏱️ <span>평균 3분 소요</span>
+                    </div>
+                    <div className="flex items-center gap-2 rounded-full bg-slate-100 px-4 py-1.5 text-slate-700">
+                      🧮 <span>점수 기반 분석</span>
+                    </div>
+                  </dl>
+                </div>
+              </div>
+            </header>
+
+            <div className="rounded-[2.5rem] bg-white p-8 md:p-12 shadow-xl border border-slate-100 text-center">
+              <div className="mx-auto mb-8 flex h-20 w-20 items-center justify-center rounded-3xl bg-indigo-50 text-4xl shadow-sm animate-bounce-slow">
                 🎯
               </div>
-              <h2 className="text-3xl font-black text-slate-900 leading-tight">
+              <h2 className="mb-4 text-3xl font-black text-slate-900 tracking-tight leading-tight">
                 나의 공무원 직렬 찾기
               </h2>
-              <p className="text-slate-500 font-medium leading-relaxed">
+              <p className="mb-8 text-slate-600 font-medium leading-relaxed">
                 10개의 질문으로 내 성향에 딱 맞는 공무원 직렬을 추천해 드립니다.<br />
                 행정·기술·세무·보안·교육 중 나의 운명은?
               </p>
               <div className="space-y-6">
-                <Button size="xl" className="w-full font-black bg-indigo-600 hover:bg-indigo-700" onClick={() => setStep("quiz")}>
+                <Button size="xl" className="w-full font-black bg-indigo-600 hover:bg-indigo-700 shadow-lg shadow-indigo-200" onClick={() => setStep("quiz")}>
                   🚀 테스트 시작하기
                 </Button>
                 <AdSenseSlot slot="1777541474" className="min-h-[100px]" />
               </div>
             </div>
-          </motion.section>
+          </motion.div>
         )}
 
         {step === "quiz" && current && (
@@ -359,38 +398,46 @@ export function CivilServiceQuiz() {
         )}
 
         {step === "result" && (
-          <motion.section
+          <motion.div
             key="result"
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
             className="space-y-6"
           >
             <div className="overflow-hidden rounded-[3rem] bg-white shadow-2xl border-8 border-white">
-              <div className="bg-gradient-to-br from-indigo-600 to-sky-500 p-12 text-center text-white relative">
+              <div className="bg-gradient-to-br from-indigo-600 to-sky-500 p-10 md:p-12 text-center text-white relative">
                 <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -mr-16 -mt-16 blur-3xl" />
                 <div className="mb-6 text-8xl drop-shadow-2xl">{result.icon}</div>
-                <h3 className="text-4xl font-black tracking-tight">{result.title}</h3>
-                <p className="mt-2 text-indigo-100 font-bold text-xl">{result.subtitle}</p>
+                <div className="inline-block rounded-full bg-white/20 px-6 py-1.5 text-sm font-black backdrop-blur-md mb-4">
+                  Result Type
+                </div>
+                <h3 className="text-3xl md:text-4xl font-black tracking-tight leading-tight">{result.title}</h3>
+                <p className="mt-3 text-indigo-100 font-bold text-lg md:text-xl">{result.subtitle}</p>
               </div>
+
               <div className="p-8 md:p-12">
-                <div className="grid gap-8 md:grid-cols-2">
-                  <div className="rounded-[2rem] bg-slate-50/50 p-8 border border-slate-100">
-                    <h4 className="text-xs font-black uppercase text-slate-400 tracking-widest mb-6">핵심 업무 역량</h4>
+                <div className="grid gap-6 md:grid-cols-2">
+                  <div className="rounded-[2rem] bg-slate-50 p-6 md:p-8 border border-slate-100">
+                    <h4 className="flex items-center gap-2 text-xs font-black uppercase text-indigo-500 tracking-widest mb-6">
+                      <span className="h-2 w-2 rounded-full bg-indigo-500" /> 핵심 업무 역량
+                    </h4>
                     <ul className="space-y-4">
                       {result.strengths.map((item) => (
-                        <li key={item} className="flex items-start gap-4 text-slate-700 font-bold text-lg">
-                          <span className="mt-1.5 h-2 w-2 rounded-full bg-indigo-500 shrink-0" />
+                        <li key={item} className="flex items-start gap-4 text-slate-700 font-bold text-base md:text-lg bg-white p-4 rounded-xl shadow-sm border border-slate-100">
+                          <span className="mt-1 h-2 w-2 rounded-full bg-indigo-400 shrink-0" />
                           {item}
                         </li>
                       ))}
                     </ul>
                   </div>
-                  <div className="rounded-[2rem] bg-slate-50/50 p-8 border border-slate-100">
-                    <h4 className="text-xs font-black uppercase text-slate-400 tracking-widest mb-6">주요 매칭 기관</h4>
+                  <div className="rounded-[2rem] bg-slate-50 p-6 md:p-8 border border-slate-100">
+                    <h4 className="flex items-center gap-2 text-xs font-black uppercase text-sky-500 tracking-widest mb-6">
+                      <span className="h-2 w-2 rounded-full bg-sky-500" /> 주요 매칭 기관
+                    </h4>
                     <ul className="space-y-4">
                       {result.workplaces.map((item) => (
-                        <li key={item} className="flex items-start gap-4 text-slate-700 font-bold text-lg">
-                          <span className="mt-1.5 h-2 w-2 rounded-full bg-sky-500 shrink-0" />
+                        <li key={item} className="flex items-start gap-4 text-slate-700 font-bold text-base md:text-lg bg-white p-4 rounded-xl shadow-sm border border-slate-100">
+                          <span className="mt-1 h-2 w-2 rounded-full bg-sky-400 shrink-0" />
                           {item}
                         </li>
                       ))}
@@ -400,27 +447,44 @@ export function CivilServiceQuiz() {
 
                 <AdSenseSlot slot="4108191347" className="my-10 min-h-[100px]" />
 
-                <div className="mt-12 flex flex-col gap-4">
-                  <Button size="xl" className="w-full bg-indigo-600 hover:bg-indigo-700 font-black shadow-lg shadow-indigo-100" onClick={handleShare}>
-                    🔗 결과 공유하기
+                <div className="mt-10 flex flex-col gap-4">
+                  <Button size="xl" className="relative w-full bg-indigo-600 hover:bg-indigo-700 font-black shadow-lg shadow-indigo-100 overflow-hidden text-white" onClick={handleShare}>
+                    <div className="absolute left-6 top-1/2 -translate-y-1/2">
+                      <Share2 className="w-5 h-5 text-white" />
+                    </div>
+                    <span className="w-full text-center whitespace-nowrap text-[15px] md:text-lg">결과 공유하기</span>
                   </Button>
-                  <Button asChild size="xl" className="w-full rounded-2xl bg-slate-900 font-black">
-                    <Link href={infoLink} rel="noreferrer">
+
+                  <Button asChild size="xl" className="w-full rounded-xl bg-slate-900 hover:bg-black font-black text-white shadow-lg shadow-slate-200">
+                    <Link href={infoLink} target="_blank" rel="noopener noreferrer">
                       📚 시험 정보 자세히 보기
                     </Link>
                   </Button>
+
                   <Button
-                    variant="ghost"
+                    size="xl"
+                    variant="outline"
                     onClick={handleRestart}
-                    className="w-full h-15 font-bold text-slate-400 hover:text-indigo-600"
+                    className="relative w-full border-2 border-slate-200 text-slate-600 hover:bg-slate-50 font-bold overflow-hidden"
                   >
-                    🔄 다른 답변으로 다시하기
+                    <div className="absolute left-6 top-1/2 -translate-y-1/2">
+                      <RotateCcw className="w-5 h-5 text-slate-600" />
+                    </div>
+                    <span className="w-full text-center whitespace-nowrap text-[15px] md:text-lg">다른 답변으로 다시하기</span>
+                  </Button>
+
+                  <Button variant="ghost" className="text-slate-400 font-bold" asChild>
+                    <Link href="/">다른 테스트 보러가기</Link>
                   </Button>
                 </div>
               </div>
             </div>
+
+            <div className="mt-8">
+              <RecommendedTests currentSlug="/gongmuwon" />
+            </div>
             <AdSenseSlot slot="8526798560" format="fluid" className="mt-8" />
-          </motion.section>
+          </motion.div>
         )}
       </AnimatePresence>
     </div>
