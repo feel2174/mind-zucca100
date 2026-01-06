@@ -53,14 +53,6 @@ export async function generateMetadata({ searchParams }: { searchParams: Promise
             description,
             type: "article",
             url: `https://mind.zucca100.com/dating${res ? `?res=${res}` : ""}`,
-            images: [
-                {
-                    url: "/open-graph.png",
-                    width: 1200,
-                    height: 630,
-                    alt: "MBTI 연애 성향 테스트",
-                },
-            ],
         },
     };
 }
