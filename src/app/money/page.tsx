@@ -69,38 +69,8 @@ export default function MoneyTestPage() {
   return (
     <div className="min-h-screen px-4 py-12 md:px-6">
       <article className="mx-auto flex w-full max-w-4xl flex-col gap-8">
-        <header className="space-y-6">
-          <nav className="text-sm text-slate-500">
-            <Link href="/" className="hover:text-indigo-600">
-              홈
-            </Link>{" "}
-            <span aria-hidden>›</span>{" "}
-            <span className="font-semibold text-slate-800">{pageTitle}</span>
-          </nav>
-          <div className="rounded-3xl bg-white p-8 shadow-xl shadow-emerald-50">
-            <p className="text-sm font-semibold uppercase tracking-[0.2em] text-emerald-500">
-              MONEY ROUTINE CHECK
-            </p>
-            <h1 className="mt-3 text-4xl font-bold text-slate-900">
-              {pageTitle}
-            </h1>
-            <p className="mt-4 text-lg text-slate-600">{pageDescription}</p>
-            <dl className="mt-6 flex flex-wrap gap-4 text-sm text-slate-500">
-              <div className="flex items-center gap-2 rounded-full bg-slate-100 px-4 py-1">
-                ⏱️ <span>평균 4분 소요</span>
-              </div>
-              <div className="flex items-center gap-2 rounded-full bg-slate-100 px-4 py-1">
-                🧮 <span>점수 기반 성향 분석</span>
-              </div>
-              <div className="flex items-center gap-2 rounded-full bg-slate-100 px-4 py-1">
-                🧾 <span>결과별 행동 가이드 제공</span>
-              </div>
-            </dl>
-          </div>
-        </header>
-
         <Suspense fallback={<div className="flex h-64 items-center justify-center font-bold text-emerald-400">분석 중...</div>}>
-          <MoneyHabitQuiz />
+          <MoneyHabitQuiz title={pageTitle} description={pageDescription} />
         </Suspense>
       </article>
 

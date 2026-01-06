@@ -5,6 +5,8 @@ import Link from "next/link";
 import { useSearchParams, useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { motion, AnimatePresence } from "framer-motion";
+import { Share2, RotateCcw } from "lucide-react";
+import { RecommendedTests } from "@/components/quiz/recommended-tests";
 import { AdSenseSlot } from "@/components/ui/adsense-slot";
 
 type CharacterType = "pm" | "idea" | "fixer" | "insider";
@@ -120,7 +122,12 @@ const initialScores: Record<CharacterType, number> = {
   insider: 0,
 };
 
-export function WorkplaceCharacterQuiz() {
+interface WorkplaceCharacterQuizProps {
+  title?: string;
+  description?: string;
+}
+
+export function WorkplaceCharacterQuiz({ title, description }: WorkplaceCharacterQuizProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [step, setStep] = useState<"intro" | "quiz" | "ad" | "result">("intro");
@@ -214,28 +221,64 @@ export function WorkplaceCharacterQuiz() {
     <div className="flex flex-col gap-8">
       <AnimatePresence mode="wait">
         {step === "intro" && (
-          <motion.section
+          <motion.div
             key="intro"
             initial={{ opacity: 0, y: 15 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -15 }}
-            className="rounded-[2.5rem] bg-white p-10 md:p-14 text-center shadow-2xl border border-blue-50"
+            className="flex flex-col gap-8"
           >
-            <div className="mb-8 mx-auto h-24 w-24 flex items-center justify-center rounded-3xl bg-blue-50 text-5xl shadow-inner shadow-blue-100 animate-bounce-slow">
-              🏢
+            <header className="space-y-6">
+              <nav className="text-sm text-slate-500">
+                <Link href="/" className="hover:text-indigo-600 transition-colors">
+                  홈
+                </Link>{" "}
+                <span aria-hidden>›</span>{" "}
+                <span className="font-semibold text-slate-800">직장인 캐릭터 테스트</span>
+              </nav>
+              <div className="relative overflow-hidden rounded-3xl bg-white p-6 md:p-8 shadow-xl shadow-blue-50 border border-blue-100">
+                <div className="absolute top-0 right-0 -mr-10 -mt-10 h-40 w-40 rounded-full bg-blue-50 opacity-50 blur-3xl" />
+                <div className="relative z-10">
+                  <p className="text-sm font-bold uppercase tracking-[0.2em] text-blue-500">
+                    WORKPLACE CHARACTER
+                  </p>
+                  <h1 className="mt-3 text-3xl md:text-4xl font-extrabold text-slate-900 tracking-tight">
+                    {title || "회사에서 나는 어떤 캐릭터일까?"}
+                  </h1>
+                  <p className="mt-4 text-base md:text-lg text-slate-600 leading-relaxed">
+                    {description || "직장 내 나의 강점과 캐릭터를 분석해 보세요."}
+                  </p>
+                  <dl className="mt-6 flex flex-wrap gap-4 text-xs md:text-sm font-medium">
+                    <div className="flex items-center gap-2 rounded-full bg-blue-50 px-4 py-1.5 text-blue-700">
+                      ⏱️ <span>평균 3분 소요</span>
+                    </div>
+                    <div className="flex items-center gap-2 rounded-full bg-slate-100 px-4 py-1.5 text-slate-700">
+                      🧮 <span>점수 기반 분석</span>
+                    </div>
+                  </dl>
+                </div>
+              </div>
+            </header>
+
+            <div className="rounded-[2.5rem] bg-white p-8 md:p-12 text-center shadow-2xl border border-blue-50">
+              <div className="mx-auto mb-8 flex h-24 w-24 items-center justify-center rounded-3xl bg-blue-50 text-5xl shadow-inner shadow-blue-100 animate-bounce-slow">
+                🏢
+              </div>
+              <h2 className="mb-4 text-3xl font-black text-slate-900 tracking-tight leading-tight">
+                회사생활 캐릭터<br />자가 테스트
+              </h2>
+              <p className="mb-8 text-slate-500 font-bold leading-relaxed">
+                나는 오피스의 어떤 영웅일까요?<br />
+                당신의 오피스 라이프를 데이터로 분석합니다!
+              </p>
+              <div className="space-y-6">
+                <Button size="xl" className="w-full font-black bg-blue-600 hover:bg-blue-700 shadow-lg shadow-blue-100" onClick={() => setStep("quiz")}>
+                  🚀 내 캐릭터 확인하기
+                </Button>
+                <AdSenseSlot slot="1777541474" className="min-h-[100px]" />
+              </div>
             </div>
-            <h2 className="text-3xl font-black text-slate-900 tracking-tight leading-tight">회사생활 캐릭터<br />자가 테스트</h2>
-            <p className="mt-4 text-slate-500 font-bold leading-relaxed">
-              나는 오피스의 어떤 영웅일까요?<br />
-              당신의 오피스 라이프를 데이터로 분석합니다!
-            </p>
-            <div className="space-y-6">
-              <Button size="xl" className="w-full font-black bg-blue-600 shadow-lg shadow-blue-100" onClick={() => setStep("quiz")}>
-                🚀 내 캐릭터 확인하기
-              </Button>
-              <AdSenseSlot slot="1777541474" className="min-h-[100px]" />
-            </div>
-          </motion.section>
+          </motion.div>
         )}
 
         {step === "quiz" && current && (
@@ -309,38 +352,46 @@ export function WorkplaceCharacterQuiz() {
         )}
 
         {step === "result" && (
-          <motion.section
+          <motion.div
             key="result"
-            initial={{ opacity: 0, scale: 0.9 }}
+            initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
             className="space-y-6"
           >
-            <div className="overflow-hidden rounded-[3rem] bg-white shadow-[0_32px_64px_-16px_rgba(30,58,138,0.15)] border-8 border-white">
-              <div className="bg-gradient-to-br from-blue-700 via-indigo-700 to-blue-800 p-12 text-center text-white relative">
+            <div className="overflow-hidden rounded-[3rem] bg-white shadow-2xl border-8 border-white">
+              <div className="bg-gradient-to-br from-blue-700 via-indigo-700 to-blue-800 p-10 md:p-12 text-center text-white relative">
                 <div className="absolute top-0 right-0 w-32 h-32 bg-white/5 rounded-full -mr-16 -mt-16 blur-3xl" />
                 <div className="mb-6 text-8xl drop-shadow-2xl">{resultData.icon}</div>
-                <h3 className="text-4xl font-black tracking-tight leading-tight">{resultData.title}</h3>
-                <p className="mt-3 text-blue-100/80 font-bold text-xl">{resultData.subtitle}</p>
+                <div className="inline-block rounded-full bg-white/20 px-6 py-1.5 text-sm font-black backdrop-blur-md mb-4">
+                  Character Type
+                </div>
+                <h3 className="text-3xl md:text-4xl font-black tracking-tight leading-tight">{resultData.title}</h3>
+                <p className="mt-3 text-blue-100/80 font-bold text-lg md:text-xl">{resultData.subtitle}</p>
               </div>
-              <div className="p-10 md:p-14">
-                <div className="grid gap-8 md:grid-cols-2">
-                  <div className="rounded-[2rem] bg-blue-50/50 p-8 border border-blue-100">
-                    <h4 className="text-xs font-black text-blue-400 uppercase tracking-[0.2em] mb-6">Character Traits</h4>
+
+              <div className="p-8 md:p-12">
+                <div className="grid gap-6 md:grid-cols-2">
+                  <div className="rounded-[2rem] bg-blue-50/50 p-6 md:p-8 border border-blue-100">
+                    <h4 className="flex items-center gap-2 text-xs font-black text-blue-400 uppercase tracking-[0.2em] mb-6">
+                      <span className="h-2 w-2 rounded-full bg-blue-400" /> Character Traits
+                    </h4>
                     <ul className="space-y-4">
                       {resultData.characteristics.map((item) => (
-                        <li key={item} className="flex items-center gap-4 font-black text-slate-700 text-lg">
-                          <span className="h-2.5 w-2.5 rounded-full bg-blue-500 shadow-sm" />
+                        <li key={item} className="flex items-center gap-4 font-black text-slate-700 text-base md:text-lg">
+                          <span className="h-2 w-2 rounded-full bg-blue-500 shadow-sm shrink-0" />
                           {item}
                         </li>
                       ))}
                     </ul>
                   </div>
-                  <div className="rounded-[2rem] bg-indigo-50/50 p-8 border border-indigo-100">
-                    <h4 className="text-xs font-black text-indigo-400 uppercase tracking-[0.2em] mb-6">Mastery Tips</h4>
+                  <div className="rounded-[2rem] bg-indigo-50/50 p-6 md:p-8 border border-indigo-100">
+                    <h4 className="flex items-center gap-2 text-xs font-black text-indigo-400 uppercase tracking-[0.2em] mb-6">
+                      <span className="h-2 w-2 rounded-full bg-indigo-400" /> Mastery Tips
+                    </h4>
                     <ul className="space-y-4">
                       {resultData.tips.map((tip) => (
-                        <li key={tip} className="flex items-center gap-4 font-black text-slate-700 text-lg">
-                          <span className="h-2.5 w-2.5 rounded-full bg-indigo-400 shadow-sm" />
+                        <li key={tip} className="flex items-center gap-4 font-black text-slate-700 text-base md:text-lg">
+                          <span className="h-2 w-2 rounded-full bg-indigo-400 shadow-sm shrink-0" />
                           {tip}
                         </li>
                       ))}
@@ -350,27 +401,44 @@ export function WorkplaceCharacterQuiz() {
 
                 <AdSenseSlot slot="4108191347" className="my-10 min-h-[100px]" />
 
-                <div className="mt-12 flex flex-col gap-4">
-                  <Button size="xl" className="w-full bg-blue-600 hover:bg-blue-700 font-black shadow-lg shadow-blue-100" onClick={handleShare}>
-                    🔗 결과 공유하기
+                <div className="mt-10 flex flex-col gap-4">
+                  <Button size="xl" className="relative w-full bg-blue-600 hover:bg-blue-700 font-black shadow-lg shadow-blue-100 overflow-hidden text-white" onClick={handleShare}>
+                    <div className="absolute left-6 top-1/2 -translate-y-1/2">
+                      <Share2 className="w-5 h-5 text-white" />
+                    </div>
+                    <span className="w-full text-center whitespace-nowrap text-[15px] md:text-lg">결과 공유하기</span>
                   </Button>
-                  <Button asChild size="xl" className="w-full rounded-2xl bg-slate-900 hover:bg-black font-black">
-                    <Link href={infoLink} rel="noreferrer">
+
+                  <Button asChild size="xl" className="w-full rounded-xl bg-slate-900 hover:bg-black font-black text-white shadow-lg shadow-slate-200">
+                    <Link href={infoLink} target="_blank" rel="noopener noreferrer">
                       💼 나에게 맞는 채용 공고 찾기
                     </Link>
                   </Button>
+
                   <Button
-                    variant="ghost"
+                    size="xl"
+                    variant="outline"
                     onClick={handleRestart}
-                    className="w-full h-15 font-bold text-slate-400 hover:text-blue-600"
+                    className="relative w-full border-2 border-slate-200 text-slate-600 hover:bg-slate-50 font-bold overflow-hidden"
                   >
-                    🔄 다시 테스트하기
+                    <div className="absolute left-6 top-1/2 -translate-y-1/2">
+                      <RotateCcw className="w-5 h-5 text-slate-600" />
+                    </div>
+                    <span className="w-full text-center whitespace-nowrap text-[15px] md:text-lg">다시 테스트하기</span>
+                  </Button>
+
+                  <Button variant="ghost" className="text-slate-400 font-bold" asChild>
+                    <Link href="/">다른 테스트 보러가기</Link>
                   </Button>
                 </div>
               </div>
             </div>
+
+            <div className="mt-8">
+              <RecommendedTests currentSlug="/workplace" />
+            </div>
             <AdSenseSlot slot="8526798560" format="fluid" className="mt-8" />
-          </motion.section>
+          </motion.div>
         )}
       </AnimatePresence>
     </div>
