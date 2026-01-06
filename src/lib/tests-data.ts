@@ -11,13 +11,13 @@ export interface TestData {
 
 export const tests: TestData[] = [
     {
-        title: "내 안의 숨겨진 띠 찾기",
-        description: "겉모습과 다른 나의 진짜 성격은? 12지신 동물로 알아보는 영혼의 띠 테스트.",
+        title: "2026 신년운세 & 숨겨진 띠 찾기",
+        description: "2026년 붉은 말의 해, 나를 지켜줄 수호 동물은? 행운 키워드와 대박 운세를 확인하세요.",
         slug: "/zodiac",
         duration: "약 2분 소요",
-        badge: "HOT",
-        tags: ["심리", "운세", "성격"],
-        icon: "🐉",
+        badge: "2026🔥",
+        tags: ["신년운세", "심리", "성격"],
+        icon: "🧧",
         color: "from-violet-600 to-indigo-600",
     },
     {
