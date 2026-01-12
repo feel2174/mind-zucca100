@@ -9,7 +9,7 @@ interface QuizHeaderProps {
     title: string;
     badge?: string;
     description?: string;
-    stats?: { label: string; value: string; icon?: string }[];
+    stats?: { label?: string; value: string; icon?: string }[];
     themeColor?: string; // e.g., 'pink', 'emerald', 'orange'
 }
 
