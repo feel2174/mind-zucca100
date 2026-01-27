@@ -80,4 +80,14 @@ export const tests: TestData[] = [
         icon: "🏢",
         color: "from-violet-500 to-purple-600",
     },
+    {
+        title: "나는 어떤 종목의 국가대표 관상일까?",
+        description: "내가 동계올림픽에 나간다면 어떤 종목에서 금메달을 딸 수 있을까요?",
+        slug: "/olympic",
+        duration: "약 2분 소요",
+        badge: "NEW",
+        tags: ["올림픽", "스포츠", "성격"],
+        icon: "❄️",
+        color: "from-blue-500 to-indigo-600",
+    },
 ];

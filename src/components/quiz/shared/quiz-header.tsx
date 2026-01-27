@@ -47,6 +47,12 @@ export function QuizHeader({
             border: "border-indigo-100",
             shadow: "shadow-indigo-50",
         },
+        blue: {
+            text: "text-blue-500",
+            bg: "bg-blue-50",
+            border: "border-blue-100",
+            shadow: "shadow-blue-50",
+        },
     };
 
     const theme = colorMap[themeColor] || colorMap.indigo;

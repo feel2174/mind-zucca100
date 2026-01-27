@@ -13,6 +13,7 @@ export function QuizProgress({ progress, themeColor = "indigo" }: QuizProgressPr
         emerald: "bg-gradient-to-r from-emerald-400 to-teal-500",
         orange: "bg-gradient-to-r from-orange-400 to-amber-500",
         indigo: "bg-gradient-to-r from-indigo-400 to-violet-500",
+        blue: "bg-gradient-to-r from-blue-400 to-indigo-500",
     };
 
     const barColor = colorMap[themeColor] || colorMap.indigo;
