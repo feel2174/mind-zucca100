@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Script from "next/script";
 import { IBM_Plex_Sans_KR, Gowun_Dodum } from "next/font/google";
 import { Analytics } from "@vercel/analytics/next";
+import { TaboolaSlots } from "@/components/ads/taboola-slots";
 import "./globals.css";
 
 const ibmPlexSans = IBM_Plex_Sans_KR({
@@ -124,6 +125,48 @@ export default function RootLayout({
     <html lang="ko">
       <head>
         <meta name="naver-site-verification" content="c3c33666e6bd71a25a863f9a974bbea64792fc98" />
+        <Script id="taboola-loader" strategy="beforeInteractive">
+          {`(function () {
+  var PUBLISHER_ID = 'zucca-network';
+  var PAGE_TYPE = 'article';
+
+  var LOADER_URL = '//cdn.taboola.com/libtrc/' + PUBLISHER_ID + '/loader.js';
+  var LOADER_PRIVACY_URL = '//static.ublcontent.com/libtrc/' + PUBLISHER_ID + '/loader.privacy.js';
+  var PIXEL_URL = 'https://static.cqvani.com/libtrc/r5?t=peixel&publisher=' + PUBLISHER_ID;
+  var SCRIPT_ID = 'tb_loader_script';
+
+  window._taboola = window._taboola || [];
+
+  var pageTypePush = {};
+  pageTypePush[PAGE_TYPE] = 'auto';
+  _taboola.push(pageTypePush);
+
+  new Image().src = PIXEL_URL;
+
+  var firstScript = document.getElementsByTagName('script')[0];
+
+  function injectLoader(id, src, fallbackSrc) {
+    if (document.getElementById(id)) return;
+    var s = document.createElement('script');
+    s.async = true;
+    s.src = src;
+    s.id = id;
+    if (fallbackSrc) {
+      s.onerror = function () {
+        if (s.parentNode) s.parentNode.removeChild(s);
+        injectLoader(SCRIPT_ID + '_fb', fallbackSrc, null);
+      };
+    }
+    firstScript.parentNode.insertBefore(s, firstScript);
+  }
+
+  injectLoader(SCRIPT_ID, LOADER_URL, LOADER_PRIVACY_URL);
+
+  if (window.performance && typeof window.performance.mark === 'function') {
+    window.performance.mark('tbl_ic');
+  }
+})();`}
+        </Script>
       </head>
       <body
         className={`${ibmPlexSans.variable} ${gowunDodum.variable} bg-slate-50 text-slate-900 antialiased`}
@@ -135,6 +178,11 @@ export default function RootLayout({
           strategy="afterInteractive"
         />
         {children}
+        <TaboolaSlots />
+        <Script id="taboola-flush" strategy="afterInteractive">
+          {`window._taboola = window._taboola || [];
+_taboola.push({ flush: true });`}
+        </Script>
         <Analytics />
       </body>
     </html>
