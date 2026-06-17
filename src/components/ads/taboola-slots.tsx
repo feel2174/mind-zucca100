@@ -4,6 +4,7 @@ import Script from "next/script";
 import { usePathname } from "next/navigation";
 
 const TABOOLA_ARTICLE_ROUTES = new Set([
+  "/",
   "/zodiac",
   "/dating",
   "/burnout",
